@@ -5,8 +5,8 @@ import { AuthGuard } from './core/guards/auth.guard';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full'
+    loadChildren: () =>
+      import('./features/public/public-module').then(m => m.PublicModule)
   },
   {
     path: 'auth',
@@ -50,8 +50,14 @@ const routes: Routes = [
       import('./features/reporte/reporte-module').then(m => m.ReporteModule)
   },
   {
+    path: 'admin',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      import('./features/admin/admin-module').then(m => m.AdminModule)
+  },
+  {
     path: '**',
-    redirectTo: 'dashboard'
+    redirectTo: ''
   }
 ];
 
