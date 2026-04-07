@@ -1,0 +1,209 @@
+// .background-register{  
+//   min-height: 100vh;
+
+//   background:
+//     radial-gradient(circle at 10% 10%, rgba(255, 120, 120, 0.06), transparent 40%),
+//     radial-gradient(circle at 85% 85%, rgba(163, 230, 203, 0.18), transparent 60%),
+//     linear-gradient(135deg, #f8f6f2, #f3efe9);
+// }
+
+.container {
+  display: flex;
+  flex: 1;
+  margin-bottom: 5rem;
+}
+
+.left {
+  flex: 1;
+  padding: 80px 60px;
+}
+
+.left h1 {
+  font-size: 36px;
+  font-weight: bold;
+  line-height: 1.2;
+  color: #0f172a;
+}
+
+.left span {
+  color: #015023;
+  font-style: italic;
+}
+
+.left p {
+  margin-top: 20px;
+  color: #555;
+  max-width: 400px;
+}
+
+.features {
+  margin-top: 30px;
+}
+
+.feature {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.feature strong {
+  display: block;
+  font-size: 14px;
+}
+
+.feature p {
+  font-size: 12px;
+  color: #777;
+  margin: 0;
+}
+
+.icon-feature {
+  width: 40px;
+  height: 40px;
+  background: #e6f4ec;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-feature i {
+  color: #015023;
+  font-size: 18px;
+}
+
+.right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #0f172a;
+  margin-top: 1.5rem;
+}
+
+.card {
+  width: 400px;
+  padding: 40px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.card h2 {
+  margin-bottom: 10px;
+  color: #0f172a;
+}
+
+.card p {
+  color: #777;
+  font-size: 14px;
+}
+
+.input-group {
+  margin-top: 15px;
+  text-align: left;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 5px;
+  margin-left: 2px;
+  letter-spacing: 0.5px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e5e5;
+  font-size: 14px;
+  transition: 0.2s;
+  background-color: #f9f9f9;
+}
+
+input:focus {
+  outline: none;
+  border-color: #015023;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(1, 80, 35, 0.1);
+}
+
+input::placeholder {
+  color: #bbb;
+}
+
+button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  background: #015023;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #026c30;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  font-size: 13px;
+  color: #888;
+  letter-spacing: 0.5px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #ddd;
+}
+
+.divider span {
+  padding: 0 15px;
+}
+
+.google-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background: #ffff;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  color: #555;
+}
+
+.google-btn:hover {
+  background-color: #015023;
+  color: #fff;
+}
+
+.card h2 {
+  margin-bottom: 5px;
+}
+
+.card p span {
+  color: #015023;
+  font-weight: bold;
+}
+
+.card p {
+  text-align: center;
+  font-size: 12px;
+}
