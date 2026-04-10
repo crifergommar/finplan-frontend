@@ -20,7 +20,7 @@ export class ErrorInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           localStorage.removeItem('finplan_token');
-          this.router.navigate(['/auth/login']);
+          this.router.navigate(['/login']);
         }
         const mensaje = error.error?.mensaje || 'Error inesperado del servidor';
         return throwError(() => new Error(mensaje));
