@@ -12,8 +12,8 @@ Backend fuente de verdad: `finplan-api-docs.md`
 
 ### ✅ YA IMPLEMENTADO
 
-* Vista Home (landing)
-* Vista Register (UI completa)
+* Vista  landing
+* Vista Registro (UI completa)
 * Estilos definidos
 
 ### ⚠️ EN PROGRESO

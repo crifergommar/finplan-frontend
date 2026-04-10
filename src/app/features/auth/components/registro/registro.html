@@ -27,21 +27,34 @@
         <div class="right">
             <div class="card">
                 <h2>Crear cuenta</h2>
-                <div class="input-group">
-                    <label for="name">Nombre completo</label>
-                    <input type="text" id="name" placeholder="Ej: Alexa Mendez" required>
-                </div>
 
-                <div class="input-group">
-                    <label for="email">Correo electrónico</label>
-                    <input type="email" id="email" placeholder="alex@atelier.com" required>
-                </div>
+                @if (mensajeError) {
+                  <div class="error-msg">{{ mensajeError }}</div>
+                }
+                @if (mensajeExito) {
+                  <div class="success-msg">{{ mensajeExito }}</div>
+                }
 
-                <div class="input-group">
-                    <label for="password">Contraseña</label>
-                    <input type="password" id="password" placeholder="Mínimo 8 caracteres" required>
-                </div>
-                <button>Crear cuenta</button>
+                <form [formGroup]="registroForm" (ngSubmit)="onRegistro()">
+                  <div class="input-group">
+                      <label for="name">Nombre completo</label>
+                      <input type="text" id="name" formControlName="nombre" placeholder="Ej: Alexa Mendez" required>
+                  </div>
+
+                  <div class="input-group">
+                      <label for="email">Correo electrónico</label>
+                      <input type="email" id="email" formControlName="email" placeholder="alex@atelier.com" required>
+                  </div>
+
+                  <div class="input-group">
+                      <label for="password">Contraseña</label>
+                      <input type="password" id="password" formControlName="password" placeholder="Mínimo 8 caracteres" required>
+                  </div>
+                  <button type="submit" [disabled]="cargando">
+                    {{ cargando ? 'Creando cuenta...' : 'Crear cuenta' }}
+                  </button>
+                </form>
+
                 <div class="divider">
                     <span>O continúa con</span>
                 </div>
