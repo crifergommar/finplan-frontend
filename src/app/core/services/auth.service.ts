@@ -3,6 +3,13 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { ApiService } from './api.service';
 
+export interface ApiResponse<T> {
+  data: T;
+  mensaje: string;
+  status: number;
+  timestamp: string;
+}
+
 export interface LoginRequest {
   email: string;
   password: string;
@@ -15,9 +22,11 @@ export interface RegistroRequest {
 }
 
 export interface AuthResponse {
-  token: string;
+  accessToken: string;
+  tipo: string;
   email: string;
   nombre: string;
+  rol: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -29,20 +38,20 @@ export class AuthService {
 
   constructor(private api: ApiService, private router: Router) {}
 
-  login(credenciales: LoginRequest): Observable<AuthResponse> {
-    return this.api.post<AuthResponse>('auth/login', credenciales).pipe(
+  login(credenciales: LoginRequest): Observable<ApiResponse<AuthResponse>> {
+    return this.api.post<ApiResponse<AuthResponse>>('auth/login', credenciales).pipe(
       tap(respuesta => {
-        localStorage.setItem(this.TOKEN_KEY, respuesta.token);
-        this.usuarioActual.next(respuesta);
+        localStorage.setItem(this.TOKEN_KEY, respuesta.data.accessToken);
+        this.usuarioActual.next(respuesta.data);
       })
     );
   }
 
-  registro(datos: RegistroRequest): Observable<AuthResponse> {
-    return this.api.post<AuthResponse>('auth/registro', datos).pipe(
+  registro(datos: RegistroRequest): Observable<ApiResponse<AuthResponse>> {
+    return this.api.post<ApiResponse<AuthResponse>>('auth/registro', datos).pipe(
       tap(respuesta => {
-        localStorage.setItem(this.TOKEN_KEY, respuesta.token);
-        this.usuarioActual.next(respuesta);
+        localStorage.setItem(this.TOKEN_KEY, respuesta.data.accessToken);
+        this.usuarioActual.next(respuesta.data);
       })
     );
   }
@@ -50,7 +59,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     this.usuarioActual.next(null);
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/login']);
   }
 
   obtenerToken(): string | null {
