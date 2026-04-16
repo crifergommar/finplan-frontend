@@ -28,11 +28,14 @@ Backend fuente de verdad: `finplan-api-docs.md`
 * Footer con routerLink
 * ApiResponse\<T\> envelope genérico definido
 * HttpClient registrado con interceptores en app.config.ts
-* Dashboard Home (UI completa con sidebar, métricas, tabla transacciones, filtros)
+* Dashboard Home (UI completa con métricas, tabla transacciones, filtros)
+* DashboardLayout (sidebar global + overlay + router-outlet para rutas hijas)
+* UiService (estado global del sidebar: sidebarAbierto$, toggleSidebar, cerrarSidebar)
 * TransaccionService (listar, crear, eliminar)
 * ReporteService (obtenerBalanceMensual, obtenerComparativo)
 * Modelos: Transaccion, BalanceMensualResponse, ComparativoResponse, ApiResponse\<T\>
 * Navbar/Footer se ocultan automáticamente en rutas /dashboard/*
+* Rutas /dashboard/* usan DashboardLayout como padre con children routes
 
 ### ⚠️ PENDIENTE
 
@@ -60,13 +63,14 @@ Backend fuente de verdad: `finplan-api-docs.md`
 src/app/
 │
 ├── app.config.ts              ✅ provideHttpClient + interceptores + rutas
-├── app.routes.ts              ✅ rutas: /, /register, /login, /dashboard
+├── app.routes.ts              ✅ rutas: /, /register, /login, /dashboard (children)
 ├── app.ts                     ✅ componente raíz (Navbar + RouterOutlet + Footer)
 │
 ├── core/
 │   ├── services/
 │   │   ├── auth.service.ts    ✅ login, registro, logout, obtenerToken, estaAutenticado
-│   │   └── api.service.ts     ✅ get, post, put, patch, delete (usa environment.apiUrl)
+│   │   ├── api.service.ts     ✅ get, post, put, patch, delete (usa environment.apiUrl)
+│   │   └── ui.service.ts      ✅ sidebarAbierto$, toggleSidebar, cerrarSidebar, abrirSidebar
 │   ├── interceptors/
 │   │   ├── jwt.interceptor.ts ✅ agrega Authorization: Bearer <token>
 │   │   └── error.interceptor.ts ✅ 401 → removeToken + redirect /login
@@ -76,6 +80,7 @@ src/app/
 │
 ├── shared/
 │   ├── components/
+│   │   ├── dashboard-layout/  ✅ sidebar global + overlay + router-outlet (rutas hijas)
 │   │   ├── navbar/            ✅ enlaces a /, /login, /register
 │   │   ├── footer/            ✅ con routerLink
 │   │   ├── money-input/       ❌ carpeta creada, sin implementar
@@ -98,7 +103,7 @@ src/app/
     │       └── login/         ✅ UI + Reactive Forms + AuthService.login()
     ├── dashboard/
     │   └── components/
-    │       ├── dashboard-home/ ✅ UI completa (sidebar, métricas, tabla, filtros)
+    │       ├── dashboard-home/ ✅ UI completa (métricas, tabla, filtros) — sin sidebar
     │       ├── widget-alertas/  ❌ vacío
     │       ├── widget-deudas/   ❌ vacío
     │       └── widget-resumen-mes/ ❌ vacío
@@ -114,12 +119,13 @@ src/app/
 
 ## Rutas registradas (app.routes.ts)
 
-| Ruta          | Componente      | Guard     | Estado |
-|---------------|-----------------|-----------|--------|
-| `/`           | Landing         | —         | ✅     |
-| `/register`   | Registro        | —         | ✅     |
-| `/login`      | Login           | —         | ✅     |
-| `/dashboard`  | DashboardHome   | AuthGuard | ✅     |
+| Ruta          | Componente       | Guard     | Estado |
+|---------------|------------------|-----------|--------|
+| `/`           | Landing          | —         | ✅     |
+| `/register`   | Registro         | —         | ✅     |
+| `/login`      | Login            | —         | ✅     |
+| `/dashboard`  | DashboardLayout  | AuthGuard | ✅     |
+| `/dashboard`  | → DashboardHome  | (hijo)    | ✅     |
 
 ---
 
@@ -160,6 +166,7 @@ Reglas:
 |--------------------|----------------------------------------------|---------------------------------------------------------------|
 | AuthService        | core/services/auth.service.ts                | login(), registro(), logout(), obtenerToken(), estaAutenticado() |
 | ApiService         | core/services/api.service.ts                 | get(), post(), put(), patch(), delete()                       |
+| UiService          | core/services/ui.service.ts                  | sidebarAbierto$, toggleSidebar(), cerrarSidebar(), abrirSidebar() |
 | TransaccionService | features/transaccion/services/transaccion.ts | listar(), crear(), eliminar()                                 |
 | ReporteService     | features/reporte/services/reporte.ts         | obtenerBalanceMensual(), obtenerComparativo()                  |
 

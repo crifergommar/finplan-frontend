@@ -1,0 +1,61 @@
+<div class="dashboard-layout">
+
+  <!-- ═══ OVERLAY MÓVIL ═══ -->
+  <div class="sidebar-overlay"
+       [class.visible]="uiService.sidebarAbierto"
+       (click)="uiService.cerrarSidebar()"></div>
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar" [class.open]="uiService.sidebarAbierto">
+    <div class="sidebar-logo">
+      <img src="images/logo.png" alt="FinPlan Seguro">
+      <button class="btn-close-sidebar" (click)="uiService.cerrarSidebar()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-item" routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <i class="fas fa-th-large"></i> Dashboard
+      </a>
+      <a class="nav-item" routerLink="/dashboard/presupuesto" routerLinkActive="active">
+        <i class="fas fa-wallet"></i> Presupuesto
+      </a>
+      <a class="nav-item" routerLink="/dashboard/transacciones" routerLinkActive="active">
+        <i class="fas fa-exchange-alt"></i> Transacciones
+      </a>
+      <a class="nav-item" routerLink="/dashboard/pagos" routerLinkActive="active">
+        <i class="fas fa-credit-card"></i> Pagos
+      </a>
+      <a class="nav-item" routerLink="/dashboard/deudas" routerLinkActive="active">
+        <i class="fas fa-file-invoice-dollar"></i> Deudas Activas
+      </a>
+      <a class="nav-item" routerLink="/dashboard/reportes" routerLinkActive="active">
+        <i class="fas fa-chart-bar"></i> Reportes
+      </a>
+      <a class="nav-item" routerLink="/dashboard/calendario" routerLinkActive="active">
+        <i class="fas fa-calendar-alt"></i> Calendario
+      </a>
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <i class="fas fa-user-circle"></i>
+      </div>
+      <div class="user-info">
+        <span class="user-name">{{ nombreUsuario || 'Usuario' }}</span>
+        <span class="user-email">{{ emailUsuario || 'usuario@ejemplo.com' }}</span>
+      </div>
+      <button class="btn-logout" (click)="cerrarSesion()" title="Cerrar sesión">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>
+

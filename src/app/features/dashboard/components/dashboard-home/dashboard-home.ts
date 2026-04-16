@@ -5,7 +5,7 @@ import { TransaccionService } from '../../../transaccion/services/transaccion';
 import { ReporteService } from '../../../reporte/services/reporte';
 import { Transaccion } from '../../../../shared/models/transaccion.model';
 import { BalanceMensualResponse, ComparativoResponse } from '../../../../shared/models/reporte.model';
-import { AuthService } from '../../../../core/services/auth.service';
+import { UiService } from '../../../../core/services/ui.service';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -35,10 +35,6 @@ export class DashboardHome implements OnInit {
   transaccionesFiltradas: Transaccion[] = [];
   filtroActivo: 'TODAS' | 'INGRESO' | 'GASTO' = 'TODAS';
 
-  /* ── Usuario ── */
-  nombreUsuario = '';
-  emailUsuario = '';
-
   /* ── Helpers para template ── */
   readonly meses = [
     '', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -56,12 +52,16 @@ export class DashboardHome implements OnInit {
   constructor(
     private transaccionService: TransaccionService,
     private reporteService: ReporteService,
-    private authService: AuthService
+    private uiService: UiService
   ) {}
 
   ngOnInit(): void {
-    this.cargarUsuario();
     this.cargarDatos();
+  }
+
+  /* ── Sidebar (delega a UiService) ── */
+  toggleSidebar(): void {
+    this.uiService.toggleSidebar();
   }
 
   /* ── Carga de datos ── */
@@ -119,20 +119,6 @@ export class DashboardHome implements OnInit {
       ? this.todasTransacciones
       : this.todasTransacciones.filter(t => t.tipo === this.filtroActivo);
     this.transaccionesFiltradas = lista.slice(0, 5);
-  }
-
-  /* ── Usuario ── */
-  private cargarUsuario(): void {
-    this.authService.usuarioActual$.subscribe(user => {
-      if (user) {
-        this.nombreUsuario = user.nombre;
-        this.emailUsuario = user.email;
-      }
-    });
-  }
-
-  cerrarSesion(): void {
-    this.authService.logout();
   }
 
   /* ── Helpers ── */

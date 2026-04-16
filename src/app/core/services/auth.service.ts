@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, tap, map } from 'rxjs';
+import { BehaviorSubject, Observable, tap, catchError, throwError } from 'rxjs';
 import { ApiService } from './api.service';
 
 /* ── Interfaces de request ── */
@@ -41,11 +41,37 @@ export class AuthService {
 
   constructor(private api: ApiService, private router: Router) {}
 
+
   login(credenciales: LoginRequest): Observable<ApiResponse<AuthResponse>> {
     return this.api.post<ApiResponse<AuthResponse>>('auth/login', credenciales).pipe(
       tap(resp => {
+
         localStorage.setItem(this.TOKEN_KEY, resp.data.accessToken);
         this.usuarioActual.next(resp.data);
+      }),
+
+      catchError(error => {
+        // Extraer mensaje real del backend si existe
+        const mensajeBackend = error?.error?.mensaje || error?.error?.message;
+        let mensajeAmigable: string;
+
+        if (mensajeBackend) {
+          mensajeAmigable = mensajeBackend;
+        } else if (error.status === 401) {
+          mensajeAmigable = 'Correo o contraseña incorrectos. ¡Revisa bien!';
+        } else if (error.status === 403) {
+          mensajeAmigable = 'Tu cuenta está desactivada o no tienes acceso.';
+        } else if (error.status === 400) {
+          mensajeAmigable = 'Datos inválidos. Verifica tu correo y contraseña.';
+        } else if (error.status === 500) {
+          mensajeAmigable = 'Error en el servidor. Intenta en un momento.';
+        } else if (error.status === 0) {
+          mensajeAmigable = 'No hay conexión con el servidor. Verifica tu internet.';
+        } else {
+          mensajeAmigable = '¡Ups! Algo salió mal. Intenta de nuevo.';
+        }
+
+        return throwError(() => new Error(mensajeAmigable));
       })
     );
   }
@@ -55,6 +81,26 @@ export class AuthService {
       tap(resp => {
         localStorage.setItem(this.TOKEN_KEY, resp.data.accessToken);
         this.usuarioActual.next(resp.data);
+      }),
+      catchError(error => {
+        const mensajeBackend = error?.error?.mensaje || error?.error?.message;
+        let mensajeAmigable: string;
+
+        if (mensajeBackend) {
+          mensajeAmigable = mensajeBackend;
+        } else if (error.status === 409) {
+          mensajeAmigable = 'Este correo ya está registrado.';
+        } else if (error.status === 400) {
+          mensajeAmigable = 'Datos inválidos. Verifica la información.';
+        } else if (error.status === 500) {
+          mensajeAmigable = 'Error en el servidor. Intenta en un momento.';
+        } else if (error.status === 0) {
+          mensajeAmigable = 'No hay conexión con el servidor. Verifica tu internet.';
+        } else {
+          mensajeAmigable = '¡Ups! Algo salió mal. Intenta de nuevo.';
+        }
+
+        return throwError(() => new Error(mensajeAmigable));
       })
     );
   }

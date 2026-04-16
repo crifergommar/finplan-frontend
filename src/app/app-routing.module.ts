@@ -3,11 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
-  {
-    path: '',
-    loadChildren: () =>
-      import('./features/public/public-module').then(m => m.PublicModule)
-  },
+  
   {
     path: 'auth',
     loadChildren: () =>
