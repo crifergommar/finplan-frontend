@@ -3,7 +3,7 @@
 > **Stack:** Spring Boot 4.0.4 · Java 21 · MySQL 8.0 · JWT (jjwt 0.12.7) · Flyway 11
 > **Última actualización:** Abril 2026 (Actualización: 9 de Abril)
 > **Módulos implementados:** Auth, Presupuesto, Categorías, Transacciones, Alertas, Admin, Reportes, Deudas
-> **Estado:** ✅ COMPLETAMENTE IMPLEMENTADO (7/7 módulos)
+> **Estado:**  COMPLETAMENTE IMPLEMENTADO (7/7 módulos)
 
 ---
 
@@ -158,7 +158,7 @@ Registra un nuevo usuario y retorna tokens de acceso.
 
 ---
 
-#### `POST /api/auth/login` ✅ Implementado
+#### `POST /api/auth/login`  Implementado
 
 Autentica un usuario existente.
 
@@ -210,7 +210,7 @@ Autentica un usuario existente.
 
 ---
 
-#### `POST /api/auth/refresh` ✅ Implementado
+#### `POST /api/auth/refresh`  Implementado
 
 Renueva el `accessToken` usando la cookie `refreshToken`.
 
@@ -421,11 +421,11 @@ Retorna el presupuesto de un año específico con todos sus detalles mensuales.
 ### 3.3 Categorías
 
 **Base path:** `/api/categorias` 
-**Autenticación requerida:** ✅ Todos los endpoints
+**Autenticación requerida:**  Todos los endpoints
 
 ---
 
-#### `GET /api/categorias` ✅ Implementado
+#### `GET /api/categorias`  Implementado
 
 Lista todas las categorías activas del usuario.
 
@@ -453,7 +453,7 @@ Lista todas las categorías activas del usuario.
 
 ---
 
-#### `POST /api/categorias` ✅ Implementado
+#### `POST /api/categorias`  Implementado
 
 Crea una categoría personalizada para el usuario.
 
@@ -498,7 +498,7 @@ Crea una categoría personalizada para el usuario.
 
 ---
 
-#### `PATCH /api/categorias/{id}/desactivar` ✅ Implementado
+#### `PATCH /api/categorias/{id}/desactivar`  Implementado
 
 Desactiva una categoría (borrado lógico).
 
@@ -537,11 +537,11 @@ Desactiva una categoría (borrado lógico).
 ### 3.4 Presupuestos Mensuales
 
 **Base path:** `/api/presupuestos/mensual`  
-**Autenticación requerida:** ✅ Todos los endpoints
+**Autenticación requerida:**  Todos los endpoints
 
 ---
 
-#### `PUT /api/presupuestos/mensual/{id}` ✅ Implementado
+#### `PUT /api/presupuestos/mensual/{id}`  Implementado
 
 Actualiza el monto planeado de un ítem mensual de presupuesto.
 
@@ -727,7 +727,7 @@ Acceso: ADMIN **
 ---
 
 
-### 4.2 Deudas y Pagos  ✅ Implementado
+### 4.2 Deudas y Pagos   Implementado
 
 **Propósito:** Gestionar deudas a crédito (cuotas fijas), con seguimiento de pagos y calendario de vencimientos.
 
@@ -788,25 +788,25 @@ CREATE TABLE pagos_deuda (
 ---
 
 ###  **Deudas** (Prioridad 2)
-**Status:** ✅ COMPLETAMENTE IMPLEMENTADO
-- Entidades: Deuda, CuotaDeuda, PagoDeuda ✅
-- Servicios: DeudaService, DeudaServiceImpl ✅
-- Controlador: DeudaController ✅
-- Repositorios: DeudaRepository, CuotaDeudaRepository, PagoDeudaRepository ✅
+**Status:**  COMPLETAMENTE IMPLEMENTADO
+- Entidades: Deuda, CuotaDeuda, PagoDeuda 
+- Servicios: DeudaService, DeudaServiceImpl 
+- Controlador: DeudaController 
+- Repositorios: DeudaRepository, CuotaDeudaRepository, PagoDeudaRepository 
 - Endpoints:
-  - POST /api/deudas (crear con cuotas automáticas) ✅
-  - GET /api/deudas (listar activas) ✅
-  - GET /api/deudas/{id} (obtener deuda) ✅
-  - GET /api/deudas/{id}/cuotas (ver cuotas) ✅
-  - GET /api/deudas/calendario?mes=&anio= (calendario de pagos) ✅
-  - POST /api/deudas/{id}/pagos (registrar pago) ✅
-  - GET /api/deudas/{id}/pagos (historial de pagos) ✅
-- Migraciones: V4__create_deudas.sql ✅
+  - POST /api/deudas (crear con cuotas automáticas) 
+  - GET /api/deudas (listar activas) 
+  - GET /api/deudas/{id} (obtener deuda) 
+  - GET /api/deudas/{id}/cuotas (ver cuotas) 
+  - GET /api/deudas/calendario?mes=&anio= (calendario de pagos) 
+  - POST /api/deudas/{id}/pagos (registrar pago) 
+  - GET /api/deudas/{id}/pagos (historial de pagos) 
+- Migraciones: V4__create_deudas.sql 
 
 ---
 
 
-### 4.4 Reportes  ✅ Implementado
+### 4.4 Reportes   Implementado
 
 **Propósito:** Generar comparativas entre lo planeado y lo ejecutado, y balances mensuales para análisis financiero.
 
@@ -846,14 +846,14 @@ CREATE TABLE pagos_deuda (
 ```
 
 ### **Reportes** (Prioridad 1)
-**Status:** ✅ COMPLETAMENTE IMPLEMENTADO
-- DTOs: ComparativoResponse, BalanceMensualResponse ✅
-- Repositorio: ReporteRepository ✅
-- Servicios: ReporteService, ReporteServiceImpl ✅
-- Controlador: ReporteController ✅
+**Status:**  COMPLETAMENTE IMPLEMENTADO
+- DTOs: ComparativoResponse, BalanceMensualResponse 
+- Repositorio: ReporteRepository 
+- Servicios: ReporteService, ReporteServiceImpl 
+- Controlador: ReporteController 
 - Endpoints:
-  - GET /api/reportes/comparativo?anio=&mes= (planeado vs ejecutado) ✅
-  - GET /api/reportes/balance-mensual?anio=&mes= (ingresos - gastos) ✅
+  - GET /api/reportes/comparativo?anio=&mes= (planeado vs ejecutado) 
+  - GET /api/reportes/balance-mensual?anio=&mes= (ingresos - gastos) 
 
 
 ---
@@ -885,7 +885,7 @@ CREATE TABLE pagos_deuda (
 
 ## Estado Final
 Métrica	                Valor
-Módulos completados	    7 / 7 ✅
+Módulos completados	    7 / 7 
 Endpoints	             40+
 Seguridad	          JWT + Roles
 Swagger	               Activo

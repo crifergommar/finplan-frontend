@@ -1,112 +1,6 @@
 /* ═══════════════════════════════════════════
-   DASHBOARD LAYOUT
+   DASHBOARD HOME — Page Content Styles
    ═══════════════════════════════════════════ */
-
-.dashboard-layout {
-  display: flex;
-  min-height: 100vh;
-  background: #f3f4f6;
-}
-
-/* ── SIDEBAR ── */
-.sidebar {
-  width: 240px;
-  background: #fff;
-  border-right: 1px solid #e5e7eb;
-  display: flex;
-  flex-direction: column;
-  padding: 24px 0;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  z-index: 50;
-}
-
-.sidebar-logo {
-  padding: 0 24px 28px;
-  border-bottom: 1px solid #f3f4f6;
-
-  img {
-    height: 32px;
-    object-fit: contain;
-  }
-}
-
-.sidebar-nav {
-  flex: 1;
-  padding: 16px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 16px;
-  border-radius: 10px;
-  color: #4b5563;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.15s;
-  cursor: pointer;
-
-  i {
-    width: 18px;
-    text-align: center;
-    font-size: 15px;
-  }
-
-  &:hover {
-    background: #f9fafb;
-    color: #111827;
-  }
-
-  &.active {
-    background: #16a34a;
-    color: #fff;
-    font-weight: 600;
-  }
-}
-
-.sidebar-user {
-  padding: 20px 20px 0;
-  border-top: 1px solid #f3f4f6;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.user-avatar i {
-  font-size: 36px;
-  color: #d1d5db;
-}
-
-.user-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.user-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.user-email {
-  font-size: 11px;
-  color: #9ca3af;
-}
-
-/* ── MAIN CONTENT ── */
-.main-content {
-  flex: 1;
-  margin-left: 240px;
-  padding: 28px 32px;
-}
 
 /* ── TOP BAR ── */
 .top-bar {
@@ -117,6 +11,13 @@
 }
 
 .top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ── TOP BAR TITLES (h1 + periodo) ── */
+.top-bar-titles {
   h1 {
     font-size: 22px;
     font-weight: 700;
@@ -202,6 +103,27 @@
 
   &:hover {
     background: #15803d;
+  }
+}
+
+/* ── HAMBURGER BUTTON ── */
+.btn-hamburger {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  color: #374151;
+  font-size: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: 0.15s;
+
+  &:hover {
+    background: #f9fafb;
   }
 }
 
@@ -531,6 +453,98 @@
 
   p {
     font-size: 14px;
+  }
+}
+
+/* ── TABLE RESPONSIVE WRAPPER ── */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE — TABLET (≤1024px)
+   ═══════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .search-box input {
+    width: 160px;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE — MOBILE (<768px)
+   ═══════════════════════════════════════════ */
+@media (max-width: 767px) {
+
+  /* Hamburguesa visible */
+  .btn-hamburger {
+    display: flex;
+  }
+
+  /* Top bar vertical */
+  .top-bar {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .top-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .top-bar-right {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .search-box {
+    flex: 1;
+    min-width: 0;
+
+    input {
+      width: 100%;
+    }
+  }
+
+  .btn-add {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Métricas en 1 columna */
+  .metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  /* Transacciones header stack */
+  .transactions-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .filter-tabs {
+    width: 100%;
+
+    button {
+      flex: 1;
+      text-align: center;
+      padding: 7px 8px;
+      font-size: 12px;
+    }
+  }
+
+  /* Tabla scroll horizontal */
+  .transactions-table {
+    min-width: 600px;
   }
 }
 

@@ -1,14 +1,16 @@
 .login-background {
   min-height: 100vh;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #f0f4f8;
   padding: 40px 20px;
+  overflow-x: hidden;
 }
 
 .login-card {
-  width: 100%;
+  width: min(100%, 480px);
   max-width: 480px;
   background: #fff;
   border-radius: 20px;
@@ -31,7 +33,6 @@
   font-weight: 500;
 }
 
-/* ── Mosaico de imágenes ── */
 .image-mosaic {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -53,7 +54,6 @@
   object-fit: cover;
 }
 
-/* ── Formulario ── */
 .input-group {
   margin-bottom: 16px;
   text-align: left;
@@ -136,7 +136,6 @@ label {
   }
 }
 
-/* ── Botón principal ── */
 .btn-login {
   width: 100%;
   padding: 14px;
@@ -164,7 +163,6 @@ label {
   }
 }
 
-/* ── Links ── */
 .register-link {
   margin-top: 20px;
   font-size: 14px;
@@ -181,7 +179,6 @@ label {
   }
 }
 
-/* ── Footer de card ── */
 .login-footer {
   margin-top: 28px;
   display: flex;
@@ -207,7 +204,6 @@ label {
   color: #c3c6cc;
 }
 
-/* ── Mensajes ── */
 .error-msg {
   background: #fef2f2;
   color: #991b1b;
@@ -217,4 +213,21 @@ label {
   font-size: 13px;
   margin-bottom: 12px;
   text-align: left;
+}
+
+
+@media (max-width: 768px) {
+  .login-background {
+    padding: 24px 16px;
+    align-items: flex-start;
+  }
+
+  .login-card {
+    width: 100%;
+    padding: 28px 20px;
+  }
+
+  .image-mosaic {
+    margin-bottom: 20px;
+  }
 }

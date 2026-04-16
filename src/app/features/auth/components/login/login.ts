@@ -43,6 +43,7 @@ export class Login {
       error: (err: Error) => {
         this.cargando = false;
         this.mensajeError = err.message || 'Credenciales incorrectas.';
+        console.log("Mensaje guardado:", this.mensajeError);
       },
     });
   }

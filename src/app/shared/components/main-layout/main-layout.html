@@ -1,0 +1,44 @@
+@if (mostrarNavbar) {
+  <header class="top-navbar">
+    <div class="brand">
+      <img src="images/logo.png" alt="FinPlan Seguro">
+    </div>
+
+    <button class="btn-hamburger" (click)="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <nav class="desktop-nav">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+      <a routerLink="/register" routerLinkActive="active">Registro</a>
+      <a routerLink="/login" routerLinkActive="active">Login</a>
+    </nav>
+  </header>
+}
+
+<div class="layout-shell">
+  @if (uiService.sidebarAbierto$ | async) {
+    <div class="sidebar-overlay" (click)="cerrarSidebar()"></div>
+  }
+
+  @if (uiService.sidebarAbierto$ | async) {
+    <aside class="mobile-drawer">
+      <div class="drawer-header">
+        <img src="images/logo.png" alt="FinPlan Seguro">
+        <button class="btn-close" (click)="cerrarSidebar()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <nav class="drawer-nav">
+        <a routerLink="/" (click)="cerrarSidebar()">Inicio</a>
+        <a routerLink="/register" (click)="cerrarSidebar()">Registro</a>
+        <a routerLink="/login" (click)="cerrarSidebar()">Login</a>
+      </nav>
+    </aside>
+  }
+
+  <main class="layout-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
