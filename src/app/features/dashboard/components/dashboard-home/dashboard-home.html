@@ -1,1 +1,197 @@
-<p>dashboard-home works!</p>
+<div class="dashboard-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="images/logo.png" alt="FinPlan Seguro">
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-item active">
+        <i class="fas fa-th-large"></i> Dashboard
+      </a>
+      <a class="nav-item">
+        <i class="fas fa-wallet"></i> Presupuesto
+      </a>
+      <a class="nav-item">
+        <i class="fas fa-exchange-alt"></i> Transacciones
+      </a>
+      <a class="nav-item">
+        <i class="fas fa-credit-card"></i> Pagos
+      </a>
+      <a class="nav-item">
+        <i class="fas fa-file-invoice-dollar"></i> Deudas Activas
+      </a>
+      <a class="nav-item">
+        <i class="fas fa-chart-bar"></i> Reportes
+      </a>
+      <a class="nav-item">
+        <i class="fas fa-calendar-alt"></i> Calendario
+      </a>
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <i class="fas fa-user-circle"></i>
+      </div>
+      <div class="user-info">
+        <span class="user-name">{{ nombreUsuario || 'Usuario' }}</span>
+        <span class="user-email">{{ emailUsuario || 'usuario@ejemplo.com' }}</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main class="main-content">
+
+    <!-- ── Top bar ── -->
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <h1>Resumen de {{ nombreMes }}</h1>
+        <span class="periodo">Período: {{ periodoTexto }}</span>
+      </div>
+      <div class="top-bar-right">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Buscar transacción...">
+        </div>
+        <button class="btn-icon"><i class="fas fa-bell"></i></button>
+        <button class="btn-add">
+          <i class="fas fa-plus"></i> Añadir Transacción
+        </button>
+      </div>
+    </header>
+
+    <!-- ── Loading ── -->
+    @if (cargando) {
+      <div class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Cargando datos del dashboard...</p>
+      </div>
+    }
+
+    <!-- ── Error ── -->
+    @if (mensajeError && !cargando) {
+      <div class="error-state">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>{{ mensajeError }}</p>
+        <button class="btn-retry" (click)="cargarDatos()">Reintentar</button>
+      </div>
+    }
+
+    <!-- ── Dashboard content ── -->
+    @if (!cargando && !mensajeError) {
+
+      <!-- ── Metric cards ── -->
+      <section class="metrics-grid">
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-icon ingresos"><i class="fas fa-trending-up"></i></div>
+            <span class="metric-badge positive">Mensual</span>
+          </div>
+          <p class="metric-label">Ingresos Mensuales</p>
+          <p class="metric-value">${{ ingresosMensuales | number:'1.0-0' }}</p>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-icon gastos"><i class="fas fa-trending-down"></i></div>
+            <span class="metric-badge negative">Mensual</span>
+          </div>
+          <p class="metric-label">Gastos Mensuales</p>
+          <p class="metric-value">${{ gastosMensuales | number:'1.0-0' }}</p>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-icon balance"><i class="fas fa-landmark"></i></div>
+            <span class="metric-badge" [ngClass]="balance >= 0 ? 'positive' : 'negative'">
+              {{ balance >= 0 ? 'En meta' : 'Déficit' }}
+            </span>
+          </div>
+          <p class="metric-label">Balance</p>
+          <p class="metric-value">${{ balance | number:'1.0-0' }}</p>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-icon progreso"><i class="fas fa-sync-alt"></i></div>
+            <span class="metric-badge" [ngClass]="progresoPresupuesto <= 100 ? 'positive' : 'negative'">
+              {{ progresoPresupuesto }}%
+            </span>
+          </div>
+          <p class="metric-label">Progreso del Presupuesto</p>
+          <p class="metric-sub">${{ presupuestoRestante() | number:'1.0-0' }} restantes</p>
+          <div class="progress-bar">
+            <div class="progress-fill" [ngStyle]="{'width': (progresoPresupuesto > 100 ? 100 : progresoPresupuesto) + '%'}"></div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ── Transacciones recientes ── -->
+      <section class="transactions-section">
+        <div class="transactions-header">
+          <h2>Transacciones Recientes</h2>
+          <div class="transactions-actions">
+            <div class="filter-tabs">
+              <button [ngClass]="{'active': filtroActivo === 'TODAS'}" (click)="filtrar('TODAS')">Todas</button>
+              <button [ngClass]="{'active': filtroActivo === 'INGRESO'}" (click)="filtrar('INGRESO')">Ingresos</button>
+              <button [ngClass]="{'active': filtroActivo === 'GASTO'}" (click)="filtrar('GASTO')">Gastos</button>
+            </div>
+          </div>
+        </div>
+
+        @if (transaccionesFiltradas.length === 0) {
+          <div class="empty-state">
+            <i class="fas fa-receipt"></i>
+            <p>No hay transacciones para mostrar en este período.</p>
+          </div>
+        }
+
+        @if (transaccionesFiltradas.length > 0) {
+          <table class="transactions-table">
+            <thead>
+              <tr>
+                <th>FECHA</th>
+                <th>CATEGORÍA</th>
+                <th>DESCRIPCIÓN</th>
+                <th>MONTO</th>
+                <th>TIPO</th>
+                <th>ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (tx of transaccionesFiltradas; track tx.id) {
+                <tr>
+                  <td>{{ formatearFecha(tx.fecha) }}</td>
+                  <td>
+                    <span class="category-badge" [ngClass]="tx.tipo === 'INGRESO' ? 'cat-ingreso' : 'cat-gasto'">
+                      {{ tx.categoriaNombre | uppercase }}
+                    </span>
+                  </td>
+                  <td>{{ tx.descripcion }}</td>
+                  <td [ngClass]="tx.tipo === 'INGRESO' ? 'monto-ingreso' : 'monto-gasto'">
+                    {{ tx.tipo === 'INGRESO' ? '+' : '-' }}${{ tx.monto | number:'1.0-0' }}
+                  </td>
+                  <td>
+                    <i class="fas" [ngClass]="tx.tipo === 'INGRESO' ? 'fa-arrow-up tipo-ingreso' : 'fa-arrow-down tipo-gasto'"></i>
+                  </td>
+                  <td>
+                    <button class="btn-actions"><i class="fas fa-ellipsis-h"></i></button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+
+          <div class="transactions-footer">
+            <a class="link-ver-todas">Ver todas las transacciones ›</a>
+          </div>
+        }
+      </section>
+    }
+
+  </main>
+</div>
