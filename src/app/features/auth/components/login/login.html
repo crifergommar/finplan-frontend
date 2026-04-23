@@ -3,14 +3,6 @@
     <h1 class="login-title">Bienvenido de nuevo</h1>
     <p class="login-subtitle">Inicia sesión en tu panel seguro</p>
 
-    <!-- Mosaico de imágenes -->
-    <div class="image-mosaic">
-      <div class="mosaic-item"><img src="images/logo.png" alt="FinPlan"></div>
-      <div class="mosaic-item"><img src="images/logo.png" alt="FinPlan"></div>
-      <div class="mosaic-item"><img src="images/logo.png" alt="FinPlan"></div>
-      <div class="mosaic-item"><img src="images/logo.png" alt="FinPlan"></div>
-    </div>
-
     @if (mensajeError) {
       <div class="error-msg">
         {{ mensajeError}}
@@ -35,7 +27,7 @@
           <i class="fas fa-lock input-icon"></i>
           <input [type]="mostrarPassword ? 'text' : 'password'" id="password" formControlName="password" placeholder="••••••••">
           <button type="button" class="toggle-password" (click)="mostrarPassword = !mostrarPassword">
-            <i [class]="mostrarPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            <i [class]="mostrarPassword ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
           </button>
         </div>
       </div>
@@ -51,12 +43,5 @@
     <p class="register-link">
       ¿No tienes una cuenta? <a routerLink="/register">Regístrate</a>
     </p>
-
-    <div class="login-footer">
-      <a href="#">SEGURIDAD</a>
-      <a href="#">PRIVACIDAD</a>
-      <a href="#">SOPORTE</a>
-    </div>
-    <p class="login-copyright">© 2024 FinPlan Seguro. Todos los derechos reservados.</p>
   </div>
 </div>

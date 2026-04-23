@@ -1,58 +1,87 @@
 <div class="background-register">
     <div class="container">
         <div class="left">
+
             <h1>
-                Elevemos tu capital al <br><span>estatus de arte.</span>
+                Empieza a tomar el control de tu dinero
+                <span>desde hoy.</span>
             </h1>
-            <p>Únete a la curaduría financiera más exclusiva del mercado digital.
-                Gestión de activos con precisión arquitectónica.
+
+            <p class="subtitle">
+                Crea tu cuenta en segundos y gestiona tus ingresos,
+                gastos y metas financieras en un solo lugar.
             </p>
+
             <div class="features">
+
                 <div class="feature">
-                    <div class="icon-feature"><i class="fas fa-shield-alt"></i></div>
+                    <div class="icon-feature">
+                        <i class="fas fa-bolt"></i>
+                    </div>
                     <div>
-                        <strong>Seguridad financiera</strong>
-                        <p>Protocolo bancario</p>
+                        <strong>Registro en segundos</strong>
+                        <p>Empieza sin procesos complicados</p>
                     </div>
                 </div>
-                <!-- <div class="feature">
-                    <div class="icon-feature"><i class="fas fa-lock"></i></div>
-                    <div>
-                        <strong>Cifrado 256-bit</strong>
-                        <p>Privacidad total </p>
+
+                <div class="feature">
+                    <div class="icon-feature">
+                        <i class="fas fa-chart-line"></i>
                     </div>
-                </div> -->
+                    <div>
+                        <strong>Control total</strong>
+                        <p>Visualiza ingresos y gastos fácilmente</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="icon-feature">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div>
+                        <strong>Seguridad garantizada</strong>
+                        <p>Tus datos siempre protegidos</p>
+                    </div>
+                </div>
+                <!-- mini confianza -->
+                <div class="left-trust">
+                    <span>✔ Sin costos ocultos</span>
+                    <span>✔ Datos protegidos</span>
+                </div>
+
             </div>
+
         </div>
         <div class="right">
             <div class="card">
                 <h2>Crear cuenta</h2>
 
                 @if (mensajeError) {
-                  <div class="error-msg">{{ mensajeError }}</div>
+                <div class="error-msg">{{ mensajeError }}</div>
                 }
                 @if (mensajeExito) {
-                  <div class="success-msg">{{ mensajeExito }}</div>
+                <div class="success-msg">{{ mensajeExito }}</div>
                 }
 
                 <form [formGroup]="registroForm" (ngSubmit)="onRegistro()">
-                  <div class="input-group">
-                      <label for="name">Nombre completo</label>
-                      <input type="text" id="name" formControlName="nombre" placeholder="Ej: Alexa Mendez" required>
-                  </div>
+                    <div class="input-group">
+                        <label for="name">Nombre completo</label>
+                        <input type="text" id="name" formControlName="nombre" placeholder="Ej: Alexa Mendez" required>
+                    </div>
 
-                  <div class="input-group">
-                      <label for="email">Correo electrónico</label>
-                      <input type="email" id="email" formControlName="email" placeholder="alex@atelier.com" required>
-                  </div>
+                    <div class="input-group">
+                        <label for="email">Correo electrónico</label>
+                        <input type="email" id="email" formControlName="email" placeholder="alex@atelier.com" required>
+                    </div>
 
-                  <div class="input-group">
-                      <label for="password">Contraseña</label>
-                      <input type="password" id="password" formControlName="password" placeholder="Mínimo 8 caracteres" required>
-                  </div>
-                  <button type="submit" [disabled]="cargando">
-                    {{ cargando ? 'Creando cuenta...' : 'Crear cuenta' }}
-                  </button>
+                    <div class="input-group">
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" formControlName="password"
+                            placeholder="Mínimo 8 caracteres" required>
+                    </div>
+                    <button type="submit" [disabled]="cargando">
+                        {{ cargando ? 'Creando cuenta...' : 'Crear cuenta' }}
+                    </button>
                 </form>
 
                 <div class="divider">
