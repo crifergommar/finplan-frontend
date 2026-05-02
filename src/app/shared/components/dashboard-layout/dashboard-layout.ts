@@ -4,10 +4,12 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { UiService } from '../../../core/services/ui.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { TopBarComponent } from '../top-bar/top-bar';
 
 @Component({
-  selector: 'app-dashboard-layout',
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  selector: 'dashboard-layout',
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, TopBarComponent],
   templateUrl: './dashboard-layout.html',
   styleUrl: './dashboard-layout.scss',
 })

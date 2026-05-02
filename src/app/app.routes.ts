@@ -6,6 +6,7 @@ import { DashboardLayout } from './shared/components/dashboard-layout/dashboard-
 import { DashboardHome } from './features/dashboard/components/dashboard-home/dashboard-home';
 import { AuthGuard } from './core/guards/auth.guard';
 import { Contacto } from './features/contacto/contacto';
+import { RegistrarPago } from './features/pagos/registrar-pago';
 
 export const routes: Routes = [
   { path: '', component: Landing },
@@ -18,6 +19,8 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: '', component: DashboardHome },
+      { path: 'pagos', component: RegistrarPago },
     ],
   },
+  
 ];

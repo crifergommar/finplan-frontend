@@ -4,10 +4,12 @@ import { Navbar } from './shared/components/navbar/navbar';
 import { Contacto } from './features/contacto/contacto';
 import { Footer } from './shared/components/footer/footer';
 import { filter } from 'rxjs/operators';
+import { DashboardLayout } from './shared/components/dashboard-layout/dashboard-layout';
+import { RegistrarPago } from './features/pagos/registrar-pago';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar, Footer, Contacto],
+  imports: [RouterOutlet, Navbar, Footer, Contacto, DashboardLayout, RegistrarPago],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
