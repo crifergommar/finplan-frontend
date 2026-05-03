@@ -22,7 +22,7 @@
 </header>
 
 <!-- ── Loading ── -->
-@if (cargando) {
+@if (loading) {
   <div class="loading-state">
     <i class="fas fa-spinner fa-spin"></i>
     <p>Cargando datos del dashboard...</p>
@@ -30,16 +30,24 @@
 }
 
 <!-- ── Error ── -->
-@if (mensajeError && !cargando) {
+@if (error && !loading) {
   <div class="error-state">
     <i class="fas fa-exclamation-triangle"></i>
-    <p>{{ mensajeError }}</p>
+    <p>{{ error }}</p>
     <button class="btn-retry" (click)="cargarDatos()">Reintentar</button>
   </div>
 }
 
 <!-- ── Dashboard content ── -->
-@if (!cargando && !mensajeError) {
+@if (!loading && !error) {
+
+  @if (sinPresupuesto) {
+    <div class="warning-state">
+      <i class="fas fa-wallet"></i>
+      <p>No hay presupuesto para este año.</p>
+      <a class="btn-retry" routerLink="/dashboard/presupuesto">Ir a Presupuesto</a>
+    </div>
+  }
 
   <!-- ── Metric cards ── -->
   <section class="metrics-grid">

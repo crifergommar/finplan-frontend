@@ -1,27 +1,35 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { forkJoin } from 'rxjs';
+import { catchError, finalize, forkJoin, of } from 'rxjs';
+import { RouterLink } from '@angular/router';
 import { TransaccionService } from '../../../transaccion/services/transaccion';
 import { ReporteService } from '../../../reporte/services/reporte';
+import { PresupuestoService } from '../../../presupuesto/services/presupuesto';
 import { Transaccion } from '../../../../shared/models/transaccion.model';
 import { BalanceMensualResponse, ComparativoResponse } from '../../../../shared/models/reporte.model';
+import { Presupuesto } from '../../../../shared/models/presupuesto.model';
 import { UiService } from '../../../../core/services/ui.service';
+import { ApiResponse } from '../../../../shared/models/api-response.model';
+import { ApiError } from '../../../../shared/models/api-error.model';
 
 @Component({
   selector: 'app-dashboard-home',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './dashboard-home.html',
   styleUrl: './dashboard-home.scss',
 })
 export class DashboardHome implements OnInit {
 
   /* ── Estado ── */
-  cargando = true;
-  mensajeError = '';
+  loading = true;
+  error: string | null = null;
+  sinPresupuesto = false;
 
   /* ── Período actual ── */
   mesActual = new Date().getMonth() + 1;
   anioActual = new Date().getFullYear();
+
+  comparativo: ComparativoResponse | null = null;
 
   /* ── Métricas ── */
   ingresosMensuales = 0;
@@ -41,6 +49,14 @@ export class DashboardHome implements OnInit {
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
 
+  get cargando(): boolean {
+    return this.loading;
+  }
+
+  get mensajeError(): string {
+    return this.error ?? '';
+  }
+
   get nombreMes(): string {
     return this.meses[this.mesActual] || '';
   }
@@ -52,6 +68,7 @@ export class DashboardHome implements OnInit {
   constructor(
     private transaccionService: TransaccionService,
     private reporteService: ReporteService,
+    private presupuestoService: PresupuestoService,
     private uiService: UiService
   ) {}
 
@@ -66,23 +83,63 @@ export class DashboardHome implements OnInit {
 
   /* ── Carga de datos ── */
   cargarDatos(): void {
-    this.cargando = true;
-    this.mensajeError = '';
+    this.loading = true;
+    this.error = null;
+    this.sinPresupuesto = false;
 
     forkJoin({
-      transacciones: this.transaccionService.listar(this.mesActual, this.anioActual),
-      balance: this.reporteService.obtenerBalanceMensual(this.mesActual, this.anioActual),
-      comparativo: this.reporteService.obtenerComparativo(this.mesActual, this.anioActual),
-    }).subscribe({
-      next: ({ transacciones, balance, comparativo }) => {
+      transacciones: this.transaccionService.listar(this.mesActual, this.anioActual).pipe(
+        catchError((error: Error) => {
+          this.registrarError(error, 'Error cargando transacciones');
+          return of([]);
+        })
+      ),
+      balance: this.reporteService.obtenerBalanceMensual(this.mesActual, this.anioActual).pipe(
+        catchError((error: Error) => {
+          this.registrarError(error, 'Error cargando balance mensual');
+          return of({
+            data: {
+              anio: this.anioActual,
+              mes: this.mesActual,
+              totalIngresos: 0,
+              totalGastos: 0,
+              balance: 0,
+            },
+            mensaje: '',
+            status: 200,
+            timestamp: '',
+          } satisfies ApiResponse<BalanceMensualResponse>);
+        })
+      ),
+      comparativo: this.reporteService.obtenerComparativo(this.mesActual, this.anioActual).pipe(
+        catchError((error: Error) => {
+          this.registrarError(error, 'Error cargando comparativo');
+          return of(null);
+        })
+      ),
+      presupuesto: this.presupuestoService.getPresupuesto(this.anioActual).pipe(
+        catchError((error: ApiError | Error) => {
+          if (error instanceof ApiError && error.status === 404) {
+            return of(null);
+          }
+
+          this.registrarError(error, 'Error cargando presupuesto');
+          return of(null);
+        })
+      ),
+    }).pipe(
+      finalize(() => {
+        this.loading = false;
+      })
+    ).subscribe({
+      next: ({ transacciones, balance, comparativo, presupuesto }) => {
         this.procesarBalance(balance.data);
-        this.procesarComparativo(comparativo.data);
-        this.procesarTransacciones(transacciones.data);
-        this.cargando = false;
+        this.procesarTransacciones(transacciones);
+        this.comparativo = comparativo?.data ?? null;
+        this.procesarPresupuesto(presupuesto, this.comparativo);
       },
       error: (err: Error) => {
-        this.mensajeError = err.message || 'Error al cargar los datos del dashboard.';
-        this.cargando = false;
+        this.error = err.message || 'Error al cargar los datos del dashboard.';
       },
     });
   }
@@ -94,10 +151,20 @@ export class DashboardHome implements OnInit {
     this.balance = data.balance;
   }
 
-  private procesarComparativo(data: ComparativoResponse): void {
-    this.totalPlaneado = data.totalPlaneado;
+  private procesarPresupuesto(presupuesto: Presupuesto | null, comparativo: ComparativoResponse | null): void {
+    if (!presupuesto) {
+      this.sinPresupuesto = true;
+      this.totalPlaneado = comparativo?.totalPlaneado ?? 0;
+      this.progresoPresupuesto = 0;
+      return;
+    }
+
+    this.totalPlaneado = comparativo?.totalPlaneado ?? presupuesto.meses
+      .filter((mes) => mes.mes === this.mesActual && mes.categoriaTipo === 'GASTO')
+      .reduce((acumulado, mes) => acumulado + mes.montoPlaneado, 0);
+
     this.progresoPresupuesto = this.totalPlaneado > 0
-      ? Math.round((data.totalEjecutado / this.totalPlaneado) * 100)
+      ? Math.round((this.gastosMensuales / this.totalPlaneado) * 100)
       : 0;
   }
 
@@ -142,5 +209,11 @@ export class DashboardHome implements OnInit {
 
   private diasEnMes(): number {
     return new Date(this.anioActual, this.mesActual, 0).getDate();
+  }
+
+  private registrarError(error: Error, fallbackMessage: string): void {
+    if (!this.error) {
+      this.error = error.message || fallbackMessage;
+    }
   }
 }

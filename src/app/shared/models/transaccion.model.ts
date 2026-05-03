@@ -1,3 +1,13 @@
+import { Categoria } from './categoria.model';
+
+export interface CrearTransaccionRequest {
+  categoriaId: number;
+  monto: number;
+  tipo: 'INGRESO' | 'GASTO';
+  descripcion: string;
+  fecha: string;
+}
+
 export interface Transaccion {
   id: number;
   categoriaId: number;
@@ -7,5 +17,6 @@ export interface Transaccion {
   descripcion: string;
   fecha: string;
   createdAt?: string;
+  categoria?: Categoria;
 }
 

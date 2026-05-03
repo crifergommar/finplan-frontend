@@ -1,1 +1,112 @@
-<p>presupuesto-tabla works!</p>
+<section class="budget-page">
+	<header class="budget-header">
+		<div>
+			<p class="eyebrow">Presupuesto</p>
+			<h1>{{ meses[mesActual] }} {{ anioActual }}</h1>
+		</div>
+
+		<div class="view-toggle" aria-label="Filtro de vista">
+			<button type="button" [class.active]="vistaActiva === 'MENSUAL'" (click)="seleccionarVista('MENSUAL')">
+				Mensual
+			</button>
+			<button type="button" [class.active]="vistaActiva === 'QUINCENAL'" (click)="seleccionarVista('QUINCENAL')">
+				Quincenal
+			</button>
+		</div>
+	</header>
+
+	<div *ngIf="loading" class="state-card">Cargando presupuesto...</div>
+	<div *ngIf="!loading && error" class="state-card error">{{ error }}</div>
+	<div *ngIf="!loading && !error && vacio" class="state-card">No hay presupuesto para este año. Créelo primero.</div>
+
+	<ng-container *ngIf="!loading && !error && !vacio">
+		<section class="metrics-grid">
+			<article class="metric-card">
+				<span class="metric-label">Ingresos Totales</span>
+				<strong class="metric-value positive">{{ formatearMoneda(ingresosTotales.valor) }}</strong>
+				<small>{{ ingresosTotales.variacion }}</small>
+			</article>
+
+			<article class="metric-card">
+				<span class="metric-label">Gastos Totales</span>
+				<strong class="metric-value negative">{{ formatearMoneda(gastosTotales.valor) }}</strong>
+				<small>{{ gastosTotales.variacion }}</small>
+			</article>
+
+			<article class="metric-card">
+				<span class="metric-label">Balance Mensual</span>
+				<strong class="metric-value">{{ formatearMoneda(balanceMensual.valor) }}</strong>
+				<small>{{ balanceMensual.variacion }}</small>
+			</article>
+
+			<article class="metric-card">
+				<span class="metric-label">Uso del Presupuesto</span>
+				<strong class="metric-value">{{ usoPresupuesto }}%</strong>
+				<small>{{ gastoVsPlaneado }}</small>
+			</article>
+		</section>
+
+		<section *ngIf="vistaActiva === 'QUINCENAL'" class="quincenas-grid">
+			<article class="quincena-card" *ngFor="let quincena of quincenas; trackBy: trackByIndice">
+				<div class="card-head">
+					<div>
+						<h2>{{ quincena.titulo }}</h2>
+						<p>{{ quincena.rango }}</p>
+					</div>
+					<span class="status-pill" [ngClass]="claseEstado(quincena.estado)">{{ textoEstado(quincena.estado) }}</span>
+				</div>
+
+				<div *ngIf="quincena.transacciones.length; else sinTransacciones" class="transactions-list">
+					<div class="transaction-row" *ngFor="let transaccion of quincena.transacciones; trackBy: trackByTransaccion">
+						<div>
+							<strong>{{ transaccion.categoriaNombre }}</strong>
+							<p>{{ transaccion.descripcion }}</p>
+						</div>
+						<span [ngClass]="claseMonto(transaccion)">{{ etiquetaMonto(transaccion) }}</span>
+					</div>
+				</div>
+
+				<ng-template #sinTransacciones>
+					<p class="empty-copy">No hay transacciones en esta quincena.</p>
+				</ng-template>
+
+				<footer class="card-foot">
+					<span>Sub-balance</span>
+					<strong [class.positive]="quincena.subtotal >= 0" [class.negative]="quincena.subtotal < 0">
+						{{ formatearMoneda(quincena.subtotal) }}
+					</strong>
+				</footer>
+			</article>
+		</section>
+
+		<section class="table-card">
+			<div class="card-head">
+				<div>
+					<h2>Detalle Mensual</h2>
+					<p>{{ detalleMensual.length }} movimientos</p>
+				</div>
+			</div>
+
+			<div class="table-wrapper">
+				<table>
+					<thead>
+						<tr>
+							<th>Concepto</th>
+							<th>Categoría</th>
+							<th>Fecha</th>
+							<th>Monto</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let transaccion of detalleMensual; trackBy: trackByTransaccion">
+							<td>{{ transaccion.descripcion }}</td>
+							<td>{{ transaccion.categoriaNombre }}</td>
+							<td>{{ transaccion.fecha | date:'dd MMM yyyy':'':'es-CO' }}</td>
+							<td [ngClass]="claseMonto(transaccion)">{{ etiquetaMonto(transaccion) }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</section>
+	</ng-container>
+</section>

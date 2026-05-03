@@ -1,1 +1,164 @@
-<p>transaccion-lista works!</p>
+<section class="transactions-page">
+	<header class="page-header">
+		<div>
+			<p class="eyebrow">Transacciones</p>
+			<h1>Movimientos del período</h1>
+			<p class="subtitle">Controle ingresos y gastos de {{ meses[filtroMes - 1].etiqueta }} {{ filtroAnio }}.</p>
+		</div>
+
+		<button class="primary-button" type="button" (click)="abrirModal()">
+			Añadir Transacción
+		</button>
+	</header>
+
+	<section class="filters-card">
+		<div class="select-group">
+			<label for="mes">Mes</label>
+			<select id="mes" [value]="filtroMes" (change)="actualizarMes($any($event.target).value)">
+				<option *ngFor="let mes of meses" [value]="mes.valor">{{ mes.etiqueta }}</option>
+			</select>
+		</div>
+
+		<div class="select-group">
+			<label for="anio">Año</label>
+			<select id="anio" [value]="filtroAnio" (change)="actualizarAnio($any($event.target).value)">
+				<option *ngFor="let anio of aniosDisponibles" [value]="anio">{{ anio }}</option>
+			</select>
+		</div>
+
+		<div class="type-toggle" aria-label="Filtro por tipo">
+			<button type="button" [class.active]="filtroTipo === 'TODAS'" (click)="cambiarFiltroTipo('TODAS')">Todas</button>
+			<button type="button" [class.active]="filtroTipo === 'INGRESO'" (click)="cambiarFiltroTipo('INGRESO')">Ingresos</button>
+			<button type="button" [class.active]="filtroTipo === 'GASTO'" (click)="cambiarFiltroTipo('GASTO')">Gastos</button>
+		</div>
+	</section>
+
+	<div *ngIf="mensajeExito" class="feedback success">{{ mensajeExito }}</div>
+	<div *ngIf="error" class="feedback error">{{ error }}</div>
+
+	<section class="summary-grid">
+		<article class="summary-card">
+			<span class="summary-label">Total ingresos</span>
+			<strong class="summary-value positive">{{ formatearMoneda(resumen.ingresos) }}</strong>
+		</article>
+		<article class="summary-card">
+			<span class="summary-label">Total gastos</span>
+			<strong class="summary-value negative">{{ formatearMoneda(resumen.gastos) }}</strong>
+		</article>
+		<article class="summary-card">
+			<span class="summary-label">Balance</span>
+			<strong class="summary-value" [class.positive]="resumen.balance >= 0" [class.negative]="resumen.balance < 0">
+				{{ formatearMoneda(resumen.balance) }}
+			</strong>
+		</article>
+	</section>
+
+	<div *ngIf="loading" class="state-card">Cargando transacciones...</div>
+	<div *ngIf="!loading && !error && vacio" class="state-card">No hay transacciones para este período.</div>
+	<div *ngIf="!loading && !error && !vacio && !transaccionesFiltradas.length" class="state-card">No hay transacciones para el filtro seleccionado.</div>
+
+	<section *ngIf="!loading && !error && transaccionesFiltradas.length" class="table-card">
+		<div class="table-wrapper">
+			<table>
+				<thead>
+					<tr>
+						<th>Fecha</th>
+						<th>Categoría</th>
+						<th>Descripción</th>
+						<th>Tipo</th>
+						<th>Monto</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let transaccion of transaccionesFiltradas; trackBy: trackByTransaccion">
+						<td>{{ formatearFecha(transaccion.fecha) }}</td>
+						<td>{{ transaccion.categoriaNombre }}</td>
+						<td>{{ transaccion.descripcion }}</td>
+						<td>
+							<span class="type-badge" [class.ingreso]="transaccion.tipo === 'INGRESO'" [class.gasto]="transaccion.tipo === 'GASTO'">
+								{{ transaccion.tipo }}
+							</span>
+						</td>
+						<td [ngClass]="claseMonto(transaccion)">{{ etiquetaMonto(transaccion) }}</td>
+						<td class="actions-cell">
+							<button class="ghost-button danger" type="button" (click)="solicitarEliminacion(transaccion)">
+								Eliminar
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
+
+	<div *ngIf="modalAbierto" class="modal-backdrop">
+		<section class="modal-card">
+			<header class="modal-header">
+				<div>
+					<h2>Añadir Transacción</h2>
+					<p>Registre un nuevo movimiento del período.</p>
+				</div>
+				<button class="icon-button" type="button" (click)="cerrarModal()">×</button>
+			</header>
+
+			<form class="transaction-form" [formGroup]="formulario" (ngSubmit)="guardarTransaccion()">
+				<div class="type-toggle inline-toggle" aria-label="Tipo de transacción">
+					<button type="button" [class.active]="formulario.controls.tipo.value === 'GASTO'" (click)="formulario.controls.tipo.setValue('GASTO')">
+						Gasto
+					</button>
+					<button type="button" [class.active]="formulario.controls.tipo.value === 'INGRESO'" (click)="formulario.controls.tipo.setValue('INGRESO')">
+						Ingreso
+					</button>
+				</div>
+
+				<div class="form-grid">
+					<label>
+						<span>Categoría</span>
+						<select formControlName="categoriaId" [class.invalid]="esInvalido('categoriaId')">
+							<option [ngValue]="null">Seleccione una categoría</option>
+							<option *ngFor="let categoria of categoriasDisponibles" [ngValue]="categoria.id">{{ categoria.nombre }}</option>
+						</select>
+					</label>
+
+					<label>
+						<span>Monto</span>
+						<input type="number" min="0" step="0.01" formControlName="monto" [class.invalid]="esInvalido('monto')">
+					</label>
+
+					<label>
+						<span>Fecha</span>
+						<input type="date" formControlName="fecha" [class.invalid]="esInvalido('fecha')">
+					</label>
+
+					<label class="full-width">
+						<span>Descripción</span>
+						<textarea rows="4" formControlName="descripcion" [class.invalid]="esInvalido('descripcion')"></textarea>
+					</label>
+				</div>
+
+				<footer class="modal-actions">
+					<button class="primary-button" type="submit" [disabled]="guardando">
+						{{ guardando ? 'Guardando...' : 'Guardar Transacción' }}
+					</button>
+					<button class="secondary-button" type="button" (click)="cerrarModal()">Cancelar</button>
+				</footer>
+			</form>
+		</section>
+	</div>
+
+	<div *ngIf="transaccionAEliminar" class="modal-backdrop compact">
+		<section class="modal-card confirm-card">
+			<h2>Eliminar transacción</h2>
+			<p>
+				Se eliminará {{ transaccionAEliminar.descripcion }} por {{ formatearMoneda(transaccionAEliminar.monto) }}.
+			</p>
+			<footer class="modal-actions">
+				<button class="ghost-button danger" type="button" (click)="confirmarEliminacion()" [disabled]="guardando">
+					Confirmar
+				</button>
+				<button class="secondary-button" type="button" (click)="cancelarEliminacion()">Cancelar</button>
+			</footer>
+		</section>
+	</div>
+</section>

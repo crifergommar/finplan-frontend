@@ -396,7 +396,8 @@
 
 /* ── LOADING & ERROR ── */
 .loading-state,
-.error-state {
+.error-state,
+.warning-state {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -422,6 +423,10 @@
 
 .error-state i {
   color: #ef4444;
+}
+
+.warning-state i {
+  color: #16a34a;
 }
 
 .btn-retry {

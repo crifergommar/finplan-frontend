@@ -1,0 +1,158 @@
+ :host {
+	display: block;
+}
+
+.budget-page {
+	display: grid;
+	gap: 1.5rem;
+	padding: 1.5rem;
+}
+
+.budget-header,
+.card-head,
+.card-foot,
+.transaction-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+.eyebrow {
+	margin: 0;
+	color: #64748b;
+	font-size: 0.875rem;
+}
+
+h1,
+h2,
+p {
+	margin: 0;
+}
+
+.view-toggle {
+	display: inline-flex;
+	background: #e2e8f0;
+	border-radius: 999px;
+	padding: 0.25rem;
+}
+
+.view-toggle button {
+	border: 0;
+	background: transparent;
+	border-radius: 999px;
+	padding: 0.625rem 1rem;
+	font: inherit;
+	cursor: pointer;
+}
+
+.view-toggle button.active {
+	background: #ffffff;
+	box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+.metrics-grid,
+.quincenas-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 1rem;
+}
+
+.metric-card,
+.quincena-card,
+.table-card,
+.state-card {
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 1rem;
+	padding: 1.25rem;
+	box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+}
+
+.state-card.error {
+	color: #b91c1c;
+}
+
+.metric-card {
+	display: grid;
+	gap: 0.5rem;
+}
+
+.metric-label,
+.card-head p,
+.transaction-row p,
+.metric-card small,
+.empty-copy {
+	color: #64748b;
+}
+
+.metric-value {
+	font-size: 1.75rem;
+}
+
+.transactions-list {
+	display: grid;
+	gap: 1rem;
+	margin-top: 1rem;
+}
+
+.status-pill {
+	border-radius: 999px;
+	padding: 0.35rem 0.75rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+}
+
+.status-pill.completado {
+	background: #dcfce7;
+	color: #15803d;
+}
+
+.status-pill.en_curso {
+	background: #dbeafe;
+	color: #2563eb;
+}
+
+.status-pill.pendiente {
+	background: #f1f5f9;
+	color: #475569;
+}
+
+.table-wrapper {
+	overflow-x: auto;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 1rem;
+}
+
+th,
+td {
+	padding: 0.875rem 0.5rem;
+	text-align: left;
+	border-bottom: 1px solid #e2e8f0;
+}
+
+.positive {
+	color: #16a34a;
+}
+
+.negative {
+	color: #dc2626;
+}
+
+@media (max-width: 768px) {
+	.budget-page {
+		padding: 1rem;
+	}
+
+	.budget-header,
+	.card-head,
+	.card-foot,
+	.transaction-row {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+}
