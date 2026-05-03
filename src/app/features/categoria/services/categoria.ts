@@ -14,4 +14,10 @@ export class CategoriaService {
       map((response) => (response.data ?? []).filter((categoria) => categoria.activa !== false))
     );
   }
+
+  crear(data: { nombre: string; tipo: string }): Observable<Categoria> {
+    return this.api.post<ApiResponse<Categoria>>('categorias', data).pipe(
+      map((response) => response.data)
+    );
+  }
 }

@@ -1,0 +1,318 @@
+/* ═══════════════════════════════════════
+   CALENDARIO DE PAGOS — Component Styles
+   ═══════════════════════════════════════ */
+
+/* ── Page header ── */
+.cal-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.cal-page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+  }
+}
+
+.cal-badge-pendientes {
+  background: #dcfce7;
+  color: #16a34a;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: .4px;
+}
+
+.cal-page-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cal-btn-icon {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+
+  &:hover { background: #f3f4f6; }
+}
+
+.cal-btn-nueva {
+  padding: 9px 18px;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.15s;
+
+  &:hover { background: #15803d; }
+}
+
+/* ── Tabs ── */
+.cal-tabs {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 20px;
+}
+
+.cal-tab {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: 0.15s;
+  margin-bottom: -1px;
+
+  &.active {
+    color: #16a34a;
+    border-bottom-color: #16a34a;
+    font-weight: 600;
+  }
+
+  &:hover:not(.active) { color: #374151; }
+}
+
+/* ── Navegación mes ── */
+.cal-nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.cal-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cal-nav-btn {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  background: #fff;
+  cursor: pointer;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: 0.15s;
+
+  &:hover:not(:disabled) { background: #f3f4f6; }
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
+}
+
+.cal-mes-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  min-width: 175px;
+  text-align: center;
+}
+
+.cal-btn-hoy {
+  padding: 5px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: 0.15s;
+
+  &:hover:not(:disabled) { background: #f3f4f6; }
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
+}
+
+/* ── Totales ── */
+.cal-totales {
+  display: flex;
+  gap: 32px;
+}
+
+.cal-total-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.cal-total-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #9ca3af;
+  letter-spacing: .5px;
+}
+
+.cal-total-valor {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+
+  &.verde { color: #16a34a; }
+}
+
+/* ── Estados (loading / error / empty) ── */
+.cal-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 12px;
+  color: #9ca3af;
+  font-size: 14px;
+  text-align: center;
+
+  i { font-size: 28px; }
+
+  button {
+    padding: 8px 20px;
+    background: #16a34a;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  &.cal-state-error { color: #dc2626; }
+}
+
+.cal-empty-msg {
+  text-align: center;
+  font-size: 13px;
+  color: #9ca3af;
+  padding: 24px 0;
+}
+
+/* ── Grid ── */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: #e5e7eb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cal-col-header {
+  background: #f9fafb;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  letter-spacing: .5px;
+  padding: 10px 0;
+}
+
+.cal-cell {
+  background: #fff;
+  min-height: 100px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &.empty { background: #f9fafb; border-color: transparent; }
+  &.hoy   { background: #f0fdf4; }
+}
+
+.cal-num {
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+
+  &.hoy-num {
+    background: #16a34a;
+    color: #fff;
+    font-weight: 700;
+  }
+}
+
+/* ── Chips de eventos ── */
+.cal-evento {
+  border-radius: 5px;
+  padding: 3px 6px;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+
+  .ev-nombre {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ev-monto { font-weight: 700; }
+
+  &.pagada {
+    opacity: 0.5;
+    text-decoration: line-through;
+  }
+}
+
+/* Paleta de colores */
+.verde   { background: #dcfce7; color: #15803d; }
+.azul    { background: #dbeafe; color: #1d4ed8; }
+.morado  { background: #ede9fe; color: #7c3aed; }
+.naranja { background: #ffedd5; color: #c2410c; }
+.indigo  { background: #e0e7ff; color: #4338ca; }
+.rosa    { background: #fce7f3; color: #be185d; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .cal-cell { min-height: 72px; padding: 5px; }
+  .cal-totales { gap: 16px; }
+  .cal-mes-label { min-width: 140px; }
+}
+
+@media (max-width: 640px) {
+  .cal-page-header { flex-wrap: wrap; gap: 10px; }
+  .cal-nav-row { flex-wrap: wrap; gap: 10px; }
+  .cal-col-header { font-size: 9px; padding: 6px 2px; }
+  .cal-cell { min-height: 52px; }
+  .ev-nombre { display: none; }
+  .cal-totales { gap: 10px; }
+  .cal-total-valor { font-size: 14px; }
+}

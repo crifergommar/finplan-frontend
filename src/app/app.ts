@@ -9,7 +9,7 @@ import { RegistrarPago } from './features/pagos/registrar-pago';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar, Footer, Contacto, DashboardLayout, RegistrarPago],
+  imports: [RouterOutlet, Navbar, Footer,],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

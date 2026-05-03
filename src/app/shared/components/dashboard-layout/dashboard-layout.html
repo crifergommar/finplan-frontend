@@ -55,6 +55,12 @@
   <!-- ═══ MAIN CONTENT ═══ -->
   <main class="main-content">
     <app-top-bar></app-top-bar>
+    <button
+  class="btn-back"
+  *ngIf="router.url.includes('/dashboard/')"
+  (click)="router.navigate(['/dashboard'])">
+  ← Volver al Dashboard
+</button>
     <router-outlet></router-outlet>
   </main>
 

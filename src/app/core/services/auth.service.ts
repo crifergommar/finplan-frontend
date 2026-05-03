@@ -1,8 +1,10 @@
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, catchError, map, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of, switchMap, tap, throwError } from 'rxjs';
 import { ApiService } from './api.service';
+import { CategoriaService } from '../../features/categoria/services/categoria';
+import { Categoria } from '../../shared/models/categoria.model';
 import { ApiResponse } from '../../shared/models/api-response.model';
 import { ApiError } from '../../shared/models/api-error.model';
 
@@ -35,7 +37,11 @@ export class AuthService {
 
   usuarioActual$ = this.usuarioActual.asObservable();
 
-  constructor(private api: ApiService, private router: Router) {}
+  constructor(
+    private api: ApiService,
+    private router: Router,
+    private categoriaService: CategoriaService
+  ) {}
 
 
   login(credenciales: LoginRequest): Observable<AuthResponse> {
@@ -44,9 +50,26 @@ export class AuthService {
       tap((usuario) => {
         this.guardarToken(usuario.accessToken);
         this.usuarioActual.next(usuario);
+        this.asegurarCategoriaOtros();
       }),
       catchError((error: unknown) => throwError(() => this.normalizarErrorAuth(error)))
     );
+  }
+
+  private asegurarCategoriaOtros(): void {
+    this.categoriaService.listar().pipe(
+      switchMap((categorias: Categoria[]) => {
+        const existe = categorias.some(
+          (c) => c.nombre === 'Otros' && c.tipo === 'GASTO'
+        );
+        return existe
+          ? of(null)
+          : this.categoriaService.crear({ nombre: 'Otros', tipo: 'GASTO' }).pipe(
+              catchError(() => of(null))
+            );
+      }),
+      catchError(() => of(null))
+    ).subscribe();
   }
 
   registro(datos: RegistroRequest): Observable<AuthResponse> {

@@ -1,1 +1,209 @@
-<p>deuda-lista works!</p>
+<!-- ── Top bar ── -->
+<header class="dl-topbar">
+  <nav class="dl-tabs">
+    <button
+      class="dl-tab"
+      [class.active]="tabActivo === 'deudas'"
+      (click)="tabActivo = 'deudas'"
+    >Deudas Activas</button>
+    <button
+      class="dl-tab"
+      [class.active]="tabActivo === 'calendario'"
+      (click)="tabActivo = 'calendario'"
+    >Calendario Proyectado</button>
+  </nav>
+  <div class="dl-topbar-right">
+    <div class="dl-search">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Buscar...">
+    </div>
+    <button class="dl-btn-icon"><i class="fas fa-bell"></i></button>
+  </div>
+</header>
+
+<!-- ── Loading ── -->
+@if (loading) {
+  <div class="dl-loading">
+    <i class="fas fa-spinner fa-spin"></i>
+    <p>Cargando deudas...</p>
+  </div>
+}
+
+<!-- ── Error ── -->
+@if (error && !loading) {
+  <div class="dl-error">
+    <i class="fas fa-exclamation-triangle"></i>
+    <p>{{ error }}</p>
+    <button (click)="cargarDatos()">Reintentar</button>
+  </div>
+}
+
+@if (!loading && !error) {
+
+  <!-- ══ TAB: DEUDAS ACTIVAS ══ -->
+  @if (tabActivo === 'deudas') {
+    <div class="dl-page-header">
+      <h1>Mis Deudas Activas</h1>
+      <p>Monitorea el progreso de tus compromisos financieros vigentes.</p>
+    </div>
+
+    <!-- Cards -->
+    @if (deudas.length === 0) {
+      <div class="dl-empty">
+        <i class="fas fa-check-circle"></i>
+        <p>No tienes deudas activas registradas.</p>
+      </div>
+    }
+
+    <div class="dl-cards-grid">
+      @for (deuda of deudas; track deuda.id) {
+        <div class="dl-card">
+          <div class="dl-card-header">
+            <div class="dl-card-icon">
+              <i class="fas {{ iconoClass(deuda.icono) }}"></i>
+            </div>
+            <span class="dl-badge {{ badgeClass(deuda.estado) }}">
+              {{ badgeLabel(deuda.estado) }}
+            </span>
+          </div>
+
+          <h3 class="dl-card-title">{{ deuda.nombre }}</h3>
+          @if (deuda.entidad) {
+            <p class="dl-card-sub">
+              {{ deuda.entidad }}
+              @if (deuda.diasProximoVcto != null) {
+                &bull; Vence en {{ deuda.diasProximoVcto }} días
+              }
+            </p>
+          }
+
+          <div class="dl-progress-row">
+            <span class="dl-progress-label">Progreso</span>
+            <span class="dl-progress-pct">{{ deuda.progreso }}%</span>
+          </div>
+          <div class="dl-progress-track">
+            <div
+              class="dl-progress-bar {{ barraClass(deuda.estado) }}"
+              [style.width.%]="deuda.progreso"
+            ></div>
+          </div>
+
+          <div class="dl-montos">
+            <div class="dl-monto-item">
+              <span class="dl-monto-label">SALDADO</span>
+              <span class="dl-monto-value">${{ deuda.montoPagado | number:'1.0-0' }}</span>
+            </div>
+            <div class="dl-monto-item dl-monto-right">
+              <span class="dl-monto-label">TOTAL</span>
+              <span class="dl-monto-value">${{ deuda.montoTotal | number:'1.0-0' }}</span>
+            </div>
+          </div>
+
+          <button class="dl-btn-pago" (click)="abrirModalPago(deuda)">
+            <i class="fas fa-credit-card"></i> Registrar Pago
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- Próximos Vencimientos -->
+    <section class="dl-vctos-section">
+      <div class="dl-vctos-header">
+        <h2>Próximos Vencimientos</h2>
+        <button class="dl-link-calendario" (click)="tabActivo = 'calendario'">
+          Ver calendario completo
+        </button>
+      </div>
+
+      @if (calendario.length === 0) {
+        <p class="dl-vctos-empty">No hay cuotas pendientes este mes.</p>
+      }
+
+      @if (calendario.length > 0) {
+        <table class="dl-vctos-table">
+          <thead>
+            <tr>
+              <th>CONCEPTO</th>
+              <th>MONTO SUGERIDO</th>
+              <th>FECHA LÍMITE</th>
+              <th>PRIORIDAD</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of calendario; track item.cuotaId) {
+              <tr>
+                <td class="td-concepto">
+                  <span class="td-icono"><i class="fas fa-landmark"></i></span>
+                  {{ item.deudaNombre }}
+                </td>
+                <td>${{ item.monto | number:'1.2-2' }}</td>
+                <td>{{ formatearFecha(item.fechaVcto) }}</td>
+                <td>
+                  <span class="prio-badge {{ prioridadClass(item.prioridad) }}">
+                    {{ prioridadLabel(item.prioridad) }}
+                  </span>
+                </td>
+                <td><i class="fas fa-chevron-right dl-chevron"></i></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </section>
+  }
+
+  <!-- ══ TAB: CALENDARIO ══ -->
+  @if (tabActivo === 'calendario') {
+    <div class="dl-page-header">
+      <h1>Calendario Proyectado</h1>
+      <p>Cuotas pendientes para {{ mesActual }} / {{ anioActual }}.</p>
+    </div>
+
+    @if (calendario.length === 0) {
+      <div class="dl-empty">
+        <i class="fas fa-calendar-check"></i>
+        <p>No hay cuotas pendientes para este período.</p>
+      </div>
+    }
+
+    @if (calendario.length > 0) {
+      <table class="dl-vctos-table">
+        <thead>
+          <tr>
+            <th>CONCEPTO</th>
+            <th>MONTO SUGERIDO</th>
+            <th>FECHA LÍMITE</th>
+            <th>PRIORIDAD</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of calendario; track item.cuotaId) {
+            <tr>
+              <td class="td-concepto">
+                <span class="td-icono"><i class="fas fa-landmark"></i></span>
+                {{ item.deudaNombre }} — Cuota #{{ item.numeroCuota }}
+              </td>
+              <td>${{ item.monto | number:'1.2-2' }}</td>
+              <td>{{ formatearFecha(item.fechaVcto) }}</td>
+              <td>
+                <span class="prio-badge {{ prioridadClass(item.prioridad) }}">
+                  {{ prioridadLabel(item.prioridad) }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  }
+}
+
+<!-- ── Modal Pago ── -->
+@if (mostrarModal && deudaSeleccionada) {
+  <app-pago-form
+    [deuda]="deudaSeleccionada"
+    (pagoGuardado)="onPagoRegistrado()"
+    (cancelado)="cerrarModal()"
+  ></app-pago-form>
+}

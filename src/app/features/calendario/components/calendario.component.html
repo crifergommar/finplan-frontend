@@ -1,0 +1,133 @@
+<!-- ── Page header ── -->
+<div class="cal-page-header">
+  <div class="cal-page-title">
+    <h1>Calendario de Pagos</h1>
+    @if (pendientes > 0) {
+      <span class="cal-badge-pendientes">{{ pendientes }} PENDIENTES</span>
+    }
+  </div>
+  <div class="cal-page-actions">
+    <button class="cal-btn-icon" title="Buscar"><i class="fas fa-search"></i></button>
+    <button class="cal-btn-icon" title="Alertas"><i class="fas fa-bell"></i></button>
+    <button class="cal-btn-nueva"><i class="fas fa-plus"></i> Nueva Deuda</button>
+  </div>
+</div>
+
+<!-- ── Tabs ── -->
+<nav class="cal-tabs">
+  <button
+    class="cal-tab"
+    [class.active]="tabActivo === 'lista'"
+    (click)="tabActivo = 'lista'"
+  >Vista de Lista</button>
+  <button
+    class="cal-tab"
+    [class.active]="tabActivo === 'mensual'"
+    (click)="tabActivo = 'mensual'"
+  >Vista Mensual</button>
+  <button
+    class="cal-tab"
+    [class.active]="tabActivo === 'anual'"
+    (click)="tabActivo = 'anual'"
+  >Reporte Anual</button>
+</nav>
+
+<!-- ══ TAB: Vista Mensual ══ -->
+@if (tabActivo === 'mensual') {
+
+  <!-- Navegación del mes + totales -->
+  <div class="cal-nav-row">
+    <div class="cal-nav-left">
+      <button class="cal-nav-btn" (click)="mesAnterior()" [disabled]="loading">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <span class="cal-mes-label">{{ MESES[mes - 1] }} {{ anio }}</span>
+      <button class="cal-nav-btn" (click)="siguienteMes()" [disabled]="loading">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+      <button class="cal-btn-hoy" (click)="irHoy()" [disabled]="loading">Hoy</button>
+    </div>
+
+    @if (!loading && !error) {
+      <div class="cal-totales">
+        <div class="cal-total-item">
+          <span class="cal-total-label">TOTAL DEL MES</span>
+          <span class="cal-total-valor">${{ totalMes | number:'1.2-2' }}</span>
+        </div>
+        <div class="cal-total-item">
+          <span class="cal-total-label">PAGADO</span>
+          <span class="cal-total-valor verde">${{ totalPagado | number:'1.2-2' }}</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Loading -->
+  @if (loading) {
+    <div class="cal-state">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Cargando calendario...</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (!loading && error) {
+    <div class="cal-state cal-state-error">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>{{ error }}</p>
+      <button (click)="cargarCalendario()">Reintentar</button>
+    </div>
+  }
+
+  <!-- Grid -->
+  @if (!loading && !error) {
+    <div class="cal-grid">
+
+      <!-- Cabecera días de semana -->
+      @for (d of DIAS_SEMANA; track d) {
+        <div class="cal-col-header">{{ d }}</div>
+      }
+
+      <!-- Celdas del mes (incluye relleno número = 0) -->
+      @for (dia of diasDelMes; track $index) {
+        <div
+          class="cal-cell"
+          [class.empty]="dia.numero === 0"
+          [class.hoy]="dia.esHoy"
+        >
+          @if (dia.numero > 0) {
+            <span class="cal-num" [class.hoy-num]="dia.esHoy">{{ dia.numero }}</span>
+
+            @for (ev of dia.eventos; track ev.cuotaId) {
+              <div class="cal-evento {{ colorClass(ev.colorIndex) }}" [class.pagada]="ev.pagada">
+                <span class="ev-nombre">{{ ev.descripcion }}</span>
+                <strong class="ev-monto">${{ ev.monto | number:'1.2-2' }}</strong>
+              </div>
+            }
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Mes sin pagos -->
+    @if (diasDelMes.length > 0 && totalMes === 0) {
+      <p class="cal-empty-msg">No hay pagos registrados en {{ MESES[mes - 1] }}.</p>
+    }
+  }
+}
+
+<!-- ══ TAB: Vista de Lista ══ -->
+@if (tabActivo === 'lista') {
+  <div class="cal-state">
+    <i class="fas fa-list"></i>
+    <p>Vista de lista — próximamente.</p>
+  </div>
+}
+
+<!-- ══ TAB: Reporte Anual ══ -->
+@if (tabActivo === 'anual') {
+  <div class="cal-state">
+    <i class="fas fa-chart-bar"></i>
+    <p>Reporte anual — próximamente.</p>
+  </div>
+}

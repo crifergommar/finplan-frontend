@@ -2,6 +2,16 @@
    DASHBOARD HOME — Page Content Styles
    ═══════════════════════════════════════════ */
 
+/*
+ * El app-top-bar global usa position:absolute top:0 dentro de .main-content.
+ * Su altura visual (~46px) supera el padding-top:28px del layout → solapamiento.
+ * Compensamos aquí para no tocar el layout global.
+ */
+:host {
+  display: block;
+  padding-top: 20px;
+}
+
 /* ── TOP BAR ── */
 .top-bar {
   display: flex;
@@ -84,6 +94,30 @@
 
   &:hover {
     background: #f9fafb;
+  }
+}
+
+.btn-export {
+  padding: 9px 18px;
+  background: #1d6a96;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.15s;
+
+  &:hover:not(:disabled) {
+    background: #155a7e;
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
   }
 }
 
@@ -550,6 +584,45 @@
   /* Tabla scroll horizontal */
   .transactions-table {
     min-width: 600px;
+  }
+}
+
+/* ── PRESUPUESTO BANNER (dashboard) ── */
+.presupuesto-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  padding: 14px 20px;
+  margin-bottom: 24px;
+
+  i {
+    color: #16a34a;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  span {
+    flex: 1;
+    font-size: 14px;
+    color: #374151;
+  }
+
+  .btn-banner {
+    padding: 8px 18px;
+    background: #16a34a;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    &:hover { background: #15803d; }
   }
 }
 

@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { UiService } from '../../../core/services/ui.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { TopBarComponent } from '../top-bar/top-bar';
@@ -21,11 +22,22 @@ export class DashboardLayout implements OnInit, OnDestroy {
   /* ── Usuario ── */
   nombreUsuario = '';
   emailUsuario = '';
+  currentUrl = '';
 
   constructor(
     public uiService: UiService,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    public router: Router
+  ) {
+    this.currentUrl = this.router.url;
+    this.subscriptions.add(
+      this.router.events
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe(() => {
+          this.currentUrl = this.router.url;
+        })
+    );
+  }
 
   ngOnInit(): void {
     this.subscriptions.add(

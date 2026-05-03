@@ -1,0 +1,318 @@
+/* ════════════════════════════════════
+   REPORTES — Component Styles
+   ════════════════════════════════════ */
+
+/* ── Page header ── */
+.rep-page-header {
+  margin-bottom: 20px;
+}
+
+.rep-page-title {
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 4px;
+  }
+
+  p {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0;
+  }
+}
+
+/* ── Filtros ── */
+.rep-filtros {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.rep-filtro-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+    letter-spacing: .3px;
+  }
+
+  select {
+    padding: 9px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #111827;
+    background: #fff;
+    outline: none;
+    cursor: pointer;
+    transition: 0.15s;
+    min-width: 140px;
+
+    &:focus  { border-color: #16a34a; }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+}
+
+/* ── Estados ── */
+.rep-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 12px;
+  color: #9ca3af;
+  font-size: 14px;
+  text-align: center;
+
+  i { font-size: 30px; }
+
+  button {
+    padding: 8px 20px;
+    background: #16a34a;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  &.rep-state-error { color: #dc2626; }
+}
+
+.rep-no-balance {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #9ca3af;
+  padding: 16px 0;
+  margin-bottom: 8px;
+
+  i { color: #93c5fd; }
+}
+
+/* ── Tarjetas ── */
+.rep-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+
+  @media (max-width: 700px) { grid-template-columns: 1fr; }
+}
+
+.rep-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+}
+
+.rep-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.rep-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rep-card-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+}
+
+.rep-card-valor {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* variantes de tarjeta */
+.rep-card-ingresos {
+  border-left: 4px solid #16a34a;
+
+  .rep-card-icon { background: #f0fdf4; color: #16a34a; }
+  .rep-card-valor { color: #15803d; }
+}
+
+.rep-card-gastos {
+  border-left: 4px solid #dc2626;
+
+  .rep-card-icon { background: #fef2f2; color: #dc2626; }
+  .rep-card-valor { color: #b91c1c; }
+}
+
+.rep-card-balance-pos {
+  border-left: 4px solid #2563eb;
+
+  .rep-card-icon { background: #eff6ff; color: #2563eb; }
+  .rep-card-valor { color: #1d4ed8; }
+}
+
+.rep-card-balance-neg {
+  border-left: 4px solid #dc2626;
+
+  .rep-card-icon { background: #fef2f2; color: #dc2626; }
+  .rep-card-valor { color: #b91c1c; }
+}
+
+/* ── Gráfica ── */
+.rep-grafica-section {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+}
+
+.rep-grafica-header {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 20px;
+
+  h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+  }
+}
+
+.rep-grafica-sub {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.rep-totales-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.rep-total-chip {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.chip-planeado { background: #dcfce7; color: #15803d; }
+.chip-ejecutado { background: #fef2f2; color: #b91c1c; }
+
+.rep-canvas-wrap {
+  position: relative;
+  max-height: 320px;
+}
+
+/* ── Tabla de categorías ── */
+.rep-tabla-section {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+
+  h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 16px;
+  }
+}
+
+.rep-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  thead tr { border-bottom: 1px solid #f3f4f6; }
+
+  th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: #9ca3af;
+    letter-spacing: .5px;
+    padding: 8px 12px 8px 0;
+  }
+
+  td {
+    padding: 12px 12px 12px 0;
+    color: #374151;
+    border-bottom: 1px solid #f9fafb;
+    vertical-align: middle;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: #fafafa; }
+}
+
+.td-nombre { font-weight: 500; }
+
+/* Chips tipo */
+.chip-tipo {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: .4px;
+}
+
+.chip-ingreso { background: #dcfce7; color: #15803d; }
+.chip-gasto   { background: #fef2f2; color: #b91c1c; }
+
+/* Diferencia */
+.dif-pos { color: #15803d; font-weight: 600; }
+.dif-neg { color: #b91c1c; font-weight: 600; }
+
+/* Estado */
+.chip-estado {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.chip-ok       { background: #dcfce7; color: #15803d; }
+.chip-excedido { background: #fef2f2; color: #b91c1c; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .rep-grafica-header { flex-direction: column; align-items: flex-start; }
+  .rep-totales-row { margin-left: 0; }
+  .rep-tabla { font-size: 12px; }
+}
+
+@media (max-width: 640px) {
+  .rep-cards { grid-template-columns: 1fr; }
+}

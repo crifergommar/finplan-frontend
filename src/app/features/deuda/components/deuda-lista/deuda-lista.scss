@@ -1,0 +1,377 @@
+/* ═══════════════════════════════════════
+   DEUDAS ACTIVAS — Page Styles
+   ═══════════════════════════════════════ */
+
+/* ── Top bar ── */
+.dl-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0;
+}
+
+.dl-tabs {
+  display: flex;
+  gap: 0;
+}
+
+.dl-tab {
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: 0.15s;
+
+  &.active {
+    color: #16a34a;
+    border-bottom-color: #16a34a;
+    font-weight: 600;
+  }
+
+  &:hover:not(.active) {
+    color: #374151;
+  }
+}
+
+.dl-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 8px;
+}
+
+.dl-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  i {
+    position: absolute;
+    left: 11px;
+    color: #9ca3af;
+    font-size: 12px;
+  }
+
+  input {
+    padding: 8px 12px 8px 32px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 13px;
+    width: 180px;
+    outline: none;
+
+    &::placeholder { color: #c5c8ce; }
+    &:focus { border-color: #16a34a; }
+  }
+}
+
+.dl-btn-icon {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Page header ── */
+.dl-page-header {
+  margin-bottom: 24px;
+
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 4px;
+  }
+
+  p {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0;
+  }
+}
+
+/* ── Loading / Error / Empty ── */
+.dl-loading,
+.dl-error,
+.dl-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 12px;
+  color: #9ca3af;
+  font-size: 14px;
+  text-align: center;
+
+  i { font-size: 32px; }
+
+  button {
+    padding: 8px 20px;
+    background: #16a34a;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+}
+
+.dl-error { color: #dc2626; }
+
+/* ── Cards grid ── */
+.dl-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 36px;
+}
+
+.dl-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+}
+
+.dl-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.dl-card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #f0fdf4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #16a34a;
+  font-size: 18px;
+}
+
+/* Badges */
+.dl-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 20px;
+  letter-spacing: .5px;
+}
+
+.badge-aldia  { background: #dcfce7; color: #16a34a; }
+.badge-proximo { background: #fff7ed; color: #ea580c; }
+.badge-vencida { background: #fef2f2; color: #dc2626; }
+
+.dl-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.dl-card-sub {
+  font-size: 12px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* Progress */
+.dl-progress-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.dl-progress-pct { font-weight: 600; color: #374151; }
+
+.dl-progress-track {
+  height: 8px;
+  background: #f3f4f6;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.dl-progress-bar {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.bar-verde   { background: #16a34a; }
+.bar-naranja { background: #ea580c; }
+.bar-roja    { background: #dc2626; }
+
+/* Montos */
+.dl-montos {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dl-monto-item { display: flex; flex-direction: column; gap: 2px; }
+.dl-monto-right { align-items: flex-end; }
+
+.dl-monto-label {
+  font-size: 10px;
+  color: #9ca3af;
+  font-weight: 600;
+  letter-spacing: .5px;
+}
+
+.dl-monto-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Botón registrar pago */
+.dl-btn-pago {
+  width: 100%;
+  padding: 10px;
+  background: #111827;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: 0.15s;
+  margin-top: auto;
+
+  &:hover { background: #1f2937; }
+}
+
+/* ── Sección vencimientos ── */
+.dl-vctos-section {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+}
+
+.dl-vctos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+
+  h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+  }
+}
+
+.dl-link-calendario {
+  font-size: 13px;
+  color: #16a34a;
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}
+
+.dl-vctos-empty {
+  font-size: 13px;
+  color: #9ca3af;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.dl-vctos-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  thead tr {
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: #9ca3af;
+    letter-spacing: .5px;
+    padding: 8px 12px 8px 0;
+  }
+
+  td {
+    padding: 12px 12px 12px 0;
+    color: #374151;
+    border-bottom: 1px solid #f9fafb;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  tbody tr:hover td { background: #f9fafb; }
+}
+
+.td-concepto {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.td-icono {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* Prioridad badges */
+.prio-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+
+.prio-alta  { background: #fef2f2; color: #dc2626; }
+.prio-media { background: #eff6ff; color: #2563eb; }
+.prio-baja  { background: #f0fdf4; color: #16a34a; }
+
+.dl-chevron { color: #d1d5db; font-size: 11px; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .dl-cards-grid { grid-template-columns: 1fr; }
+  .dl-topbar { flex-wrap: wrap; gap: 10px; }
+  .dl-vctos-table { font-size: 12px; }
+}

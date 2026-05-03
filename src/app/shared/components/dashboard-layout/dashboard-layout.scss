@@ -138,6 +138,28 @@
   z-index: 1;
 }
 
+.btn-back {
+  cursor: pointer;
+  margin: 16px 0; 
+  display: inline-flex; 
+  align-items: center;
+  gap: 6px;
+
+  padding: 6px 0;
+  border: none;
+  background: transparent;
+
+  color: #16a34a;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.btn-back:hover {
+  color: #15803d;
+  text-decoration: underline; /* 🔥 mejora UX */
+}
+
+
 /* ── SIDEBAR OVERLAY (MOBILE) ── */
 .sidebar-overlay {
   display: none;
@@ -218,6 +240,10 @@
   .main-content {
     margin-left: 0;
     padding: 20px 16px;
+  }
+
+  .btn-back {
+    margin-bottom: 16px;
   }
 }
 

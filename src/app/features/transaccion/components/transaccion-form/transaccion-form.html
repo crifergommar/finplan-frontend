@@ -1,1 +1,54 @@
-<p>transaccion-form works!</p>
+<section class="transaction-form-page">
+	<header class="form-header">
+		<div>
+			<p class="eyebrow">Nueva transacción</p>
+			<h1>Añadir Transacción</h1>
+		</div>
+	</header>
+
+	<form class="transaction-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+		<div *ngIf="error" class="form-error">{{ error }}</div>
+
+		<div class="form-grid">
+			<label>
+				<span>Tipo</span>
+				<select formControlName="tipo" [class.invalid]="esInvalido('tipo')">
+					<option value="GASTO">Gasto</option>
+					<option value="INGRESO">Ingreso</option>
+				</select>
+			</label>
+
+			<label>
+				<span>Categoría</span>
+				<select formControlName="categoriaId" [class.invalid]="esInvalido('categoriaId')">
+					<option [ngValue]="null">Seleccione una categoría</option>
+					<option *ngFor="let categoria of categoriasFiltradas" [ngValue]="categoria.id">{{ categoria.nombre }}</option>
+				</select>
+			</label>
+
+			<label>
+				<span>Monto</span>
+				<input type="number" min="1" step="0.01" formControlName="monto" [class.invalid]="esInvalido('monto')">
+			</label>
+
+			<label>
+				<span>Fecha</span>
+				<input type="date" formControlName="fecha" [class.invalid]="esInvalido('fecha')">
+			</label>
+
+			<label class="full-width">
+				<span>Descripción</span>
+				<input type="text" formControlName="descripcion" [class.invalid]="esInvalido('descripcion')">
+			</label>
+		</div>
+
+		<footer class="form-actions">
+			<button class="btn-primary" type="submit" [disabled]="loading">
+				{{ loading ? 'Guardando...' : 'Guardar Transacción' }}
+			</button>
+			<button class="btn-secondary" type="button" (click)="cancelar()" [disabled]="loading">
+				Cancelar
+			</button>
+		</footer>
+	</form>
+</section>

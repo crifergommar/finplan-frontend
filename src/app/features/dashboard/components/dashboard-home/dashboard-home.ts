@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { catchError, finalize, forkJoin, of } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { TransaccionService } from '../../../transaccion/services/transaccion';
 import { ReporteService } from '../../../reporte/services/reporte';
 import { PresupuestoService } from '../../../presupuesto/services/presupuesto';
 import { Transaccion } from '../../../../shared/models/transaccion.model';
-import { BalanceMensualResponse, ComparativoResponse } from '../../../../shared/models/reporte.model';
+import { ComparativoResponse } from '../../../../shared/models/reporte.model';
 import { Presupuesto } from '../../../../shared/models/presupuesto.model';
 import { UiService } from '../../../../core/services/ui.service';
-import { ApiResponse } from '../../../../shared/models/api-response.model';
-import { ApiError } from '../../../../shared/models/api-error.model';
+import { ExportService } from '../../services/export.service';
 
 @Component({
   selector: 'app-dashboard-home',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './dashboard-home.html',
   styleUrl: './dashboard-home.scss',
 })
@@ -24,11 +24,13 @@ export class DashboardHome implements OnInit {
   loading = true;
   error: string | null = null;
   sinPresupuesto = false;
+  descargando = false;
 
   /* ── Período actual ── */
   mesActual = new Date().getMonth() + 1;
   anioActual = new Date().getFullYear();
 
+  presupuesto: Presupuesto | null = null;
   comparativo: ComparativoResponse | null = null;
 
   /* ── Métricas ── */
@@ -40,8 +42,8 @@ export class DashboardHome implements OnInit {
 
   /* ── Transacciones ── */
   todasTransacciones: Transaccion[] = [];
-  transaccionesFiltradas: Transaccion[] = [];
   filtroActivo: 'TODAS' | 'INGRESO' | 'GASTO' = 'TODAS';
+  searchText = '';
 
   /* ── Helpers para template ── */
   readonly meses = [
@@ -65,15 +67,52 @@ export class DashboardHome implements OnInit {
     return `01 ${this.nombreMes.substring(0, 3)} - ${this.diasEnMes()} ${this.nombreMes.substring(0, 3)}`;
   }
 
+  get transaccionesFiltradas(): Transaccion[] {
+    const termino = this.searchText.trim().toLowerCase();
+
+    return this.todasTransacciones
+      .filter((transaccion) => {
+        const coincideTipo = this.filtroActivo === 'TODAS'
+          ? true
+          : transaccion.tipo === this.filtroActivo;
+
+        const coincideTexto = termino
+          ? transaccion.descripcion?.toLowerCase().includes(termino) ?? false
+          : true;
+
+        return coincideTipo && coincideTexto;
+      })
+      .slice(0, 5);
+  }
+
   constructor(
     private transaccionService: TransaccionService,
     private reporteService: ReporteService,
     private presupuestoService: PresupuestoService,
-    private uiService: UiService
+    private uiService: UiService,
+    private exportService: ExportService
   ) {}
 
   ngOnInit(): void {
     this.cargarDatos();
+  }
+
+  /* ── Exportar Excel ── */
+  exportarExcel(): void {
+    this.descargando = true;
+    const mes = this.mesActual;
+    const anio = this.anioActual;
+
+    this.exportService.exportarExcel(anio, mes).subscribe({
+      next: (blob) => {
+        this.exportService.descargarArchivo(blob, `transacciones-${anio}-${mes}.xlsx`);
+        this.descargando = false;
+      },
+      error: (err) => {
+        console.error('Error al exportar Excel:', err);
+        this.descargando = false;
+      },
+    });
   }
 
   /* ── Sidebar (delega a UiService) ── */
@@ -83,109 +122,96 @@ export class DashboardHome implements OnInit {
 
   /* ── Carga de datos ── */
   cargarDatos(): void {
+    const now = new Date();
+    const mes = now.getMonth() + 1;
+    const anio = now.getFullYear();
+
+    this.mesActual = mes;
+    this.anioActual = anio;
     this.loading = true;
     this.error = null;
     this.sinPresupuesto = false;
+    this.presupuesto = null;
+    this.comparativo = null;
+
+    // catchError individual: cada fuente falla silenciosamente — nunca bloquea forkJoin
+    const transacciones$ = this.transaccionService.listar(mes, anio).pipe(
+      catchError(() => of<Transaccion[]>([]))
+    );
+
+    const comparativo$ = this.reporteService.obtenerComparativo(mes, anio).pipe(
+      catchError(() => of(null))
+    );
+
+    // 404 esperado si el usuario no creó presupuesto — no es error de UI
+    const presupuesto$ = this.presupuestoService.getPresupuesto(anio).pipe(
+      catchError(() => of(null))
+    );
 
     forkJoin({
-      transacciones: this.transaccionService.listar(this.mesActual, this.anioActual).pipe(
-        catchError((error: Error) => {
-          this.registrarError(error, 'Error cargando transacciones');
-          return of([]);
-        })
-      ),
-      balance: this.reporteService.obtenerBalanceMensual(this.mesActual, this.anioActual).pipe(
-        catchError((error: Error) => {
-          this.registrarError(error, 'Error cargando balance mensual');
-          return of({
-            data: {
-              anio: this.anioActual,
-              mes: this.mesActual,
-              totalIngresos: 0,
-              totalGastos: 0,
-              balance: 0,
-            },
-            mensaje: '',
-            status: 200,
-            timestamp: '',
-          } satisfies ApiResponse<BalanceMensualResponse>);
-        })
-      ),
-      comparativo: this.reporteService.obtenerComparativo(this.mesActual, this.anioActual).pipe(
-        catchError((error: Error) => {
-          this.registrarError(error, 'Error cargando comparativo');
-          return of(null);
-        })
-      ),
-      presupuesto: this.presupuestoService.getPresupuesto(this.anioActual).pipe(
-        catchError((error: ApiError | Error) => {
-          if (error instanceof ApiError && error.status === 404) {
-            return of(null);
-          }
-
-          this.registrarError(error, 'Error cargando presupuesto');
-          return of(null);
-        })
-      ),
+      transacciones: transacciones$,
+      comparativo: comparativo$,
+      presupuesto: presupuesto$,
     }).pipe(
       finalize(() => {
         this.loading = false;
       })
     ).subscribe({
-      next: ({ transacciones, balance, comparativo, presupuesto }) => {
-        this.procesarBalance(balance.data);
-        this.procesarTransacciones(transacciones);
+      next: ({ transacciones, comparativo, presupuesto }) => {
+        this.todasTransacciones = [...transacciones];
         this.comparativo = comparativo?.data ?? null;
-        this.procesarPresupuesto(presupuesto, this.comparativo);
+
+        if (!presupuesto) {
+          this.sinPresupuesto = true;
+          this.presupuesto = null;
+        } else {
+          this.presupuesto = presupuesto;
+        }
+
+        this.procesarTransacciones(transacciones);
+        this.calcularMetricas();
       },
-      error: (err: Error) => {
-        this.error = err.message || 'Error al cargar los datos del dashboard.';
+      error: (err: { error?: { mensaje?: string } } & Error) => {
+        this.error = err?.error?.mensaje || err.message || 'Error cargando datos';
       },
     });
   }
 
-  /* ── Procesamiento ── */
-  private procesarBalance(data: BalanceMensualResponse): void {
-    this.ingresosMensuales = data.totalIngresos;
-    this.gastosMensuales = data.totalGastos;
-    this.balance = data.balance;
+  private procesarTransacciones(data: Transaccion[]): void {
+    this.todasTransacciones = [...data].sort(
+      (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+    );
   }
 
-  private procesarPresupuesto(presupuesto: Presupuesto | null, comparativo: ComparativoResponse | null): void {
-    if (!presupuesto) {
-      this.sinPresupuesto = true;
-      this.totalPlaneado = comparativo?.totalPlaneado ?? 0;
-      this.progresoPresupuesto = 0;
-      return;
-    }
+  private calcularMetricas(): void {
+    this.ingresosMensuales = this.todasTransacciones
+      .filter((transaccion) => transaccion.tipo === 'INGRESO')
+      .reduce((acumulado, transaccion) => acumulado + transaccion.monto, 0);
 
-    this.totalPlaneado = comparativo?.totalPlaneado ?? presupuesto.meses
-      .filter((mes) => mes.mes === this.mesActual && mes.categoriaTipo === 'GASTO')
-      .reduce((acumulado, mes) => acumulado + mes.montoPlaneado, 0);
+    this.gastosMensuales = this.todasTransacciones
+      .filter((transaccion) => transaccion.tipo === 'GASTO')
+      .reduce((acumulado, transaccion) => acumulado + transaccion.monto, 0);
+
+    this.balance = this.ingresosMensuales - this.gastosMensuales;
+
+    if (this.comparativo) {
+      this.totalPlaneado = this.comparativo.totalPlaneado;
+    } else if (this.presupuesto) {
+      this.totalPlaneado = this.presupuesto.meses
+        .filter((mes) => mes.mes === this.mesActual && mes.categoriaTipo === 'GASTO')
+        .reduce((acumulado, mes) => acumulado + mes.montoPlaneado, 0);
+    } else {
+      this.totalPlaneado = 0;
+    }
 
     this.progresoPresupuesto = this.totalPlaneado > 0
       ? Math.round((this.gastosMensuales / this.totalPlaneado) * 100)
       : 0;
   }
 
-  private procesarTransacciones(data: Transaccion[]): void {
-    this.todasTransacciones = data.sort(
-      (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
-    );
-    this.aplicarFiltro();
-  }
-
   /* ── Filtros ── */
   filtrar(tipo: 'TODAS' | 'INGRESO' | 'GASTO'): void {
     this.filtroActivo = tipo;
-    this.aplicarFiltro();
-  }
-
-  private aplicarFiltro(): void {
-    const lista = this.filtroActivo === 'TODAS'
-      ? this.todasTransacciones
-      : this.todasTransacciones.filter(t => t.tipo === this.filtroActivo);
-    this.transaccionesFiltradas = lista.slice(0, 5);
   }
 
   /* ── Helpers ── */
@@ -209,11 +235,5 @@ export class DashboardHome implements OnInit {
 
   private diasEnMes(): number {
     return new Date(this.anioActual, this.mesActual, 0).getDate();
-  }
-
-  private registrarError(error: Error, fallbackMessage: string): void {
-    if (!this.error) {
-      this.error = error.message || fallbackMessage;
-    }
   }
 }

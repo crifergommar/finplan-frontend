@@ -1,0 +1,164 @@
+<!-- ── Page Header ── -->
+<div class="rep-page-header">
+  <div class="rep-page-title">
+    <h1>Reportes</h1>
+    <p>Análisis financiero mensual — planeado vs ejecutado</p>
+  </div>
+</div>
+
+<!-- ── Filtros ── -->
+<div class="rep-filtros">
+  <div class="rep-filtro-grupo">
+    <label>Mes</label>
+    <select [(ngModel)]="mes" (change)="onFiltroChange()" [disabled]="loading">
+      @for (m of MESES; track $index) {
+        <option [value]="$index + 1">{{ m }}</option>
+      }
+    </select>
+  </div>
+  <div class="rep-filtro-grupo">
+    <label>Año</label>
+    <select [(ngModel)]="anio" (change)="onFiltroChange()" [disabled]="loading">
+      @for (y of ANIOS; track y) {
+        <option [value]="y">{{ y }}</option>
+      }
+    </select>
+  </div>
+</div>
+
+<!-- ── Loading ── -->
+@if (loading) {
+  <div class="rep-state">
+    <i class="fas fa-spinner fa-spin"></i>
+    <p>Cargando reportes...</p>
+  </div>
+}
+
+<!-- ── Error ── -->
+@if (!loading && error) {
+  <div class="rep-state rep-state-error">
+    <i class="fas fa-exclamation-triangle"></i>
+    <p>{{ error }}</p>
+    <button (click)="cargarDatos()">Reintentar</button>
+  </div>
+}
+
+@if (!loading && !error) {
+
+  <!-- ── Tarjetas de totales ── -->
+  @if (balance) {
+    <div class="rep-cards">
+      <div class="rep-card rep-card-ingresos">
+        <div class="rep-card-icon">
+          <i class="fas fa-arrow-trend-up"></i>
+        </div>
+        <div class="rep-card-info">
+          <span class="rep-card-label">Ingresos</span>
+          <span class="rep-card-valor">${{ balance.totalIngresos | number:'1.0-0' }}</span>
+        </div>
+      </div>
+
+      <div class="rep-card rep-card-gastos">
+        <div class="rep-card-icon">
+          <i class="fas fa-arrow-trend-down"></i>
+        </div>
+        <div class="rep-card-info">
+          <span class="rep-card-label">Gastos</span>
+          <span class="rep-card-valor">${{ balance.totalGastos | number:'1.0-0' }}</span>
+        </div>
+      </div>
+
+      <div class="rep-card" [class.rep-card-balance-pos]="balance.balance >= 0"
+                            [class.rep-card-balance-neg]="balance.balance < 0">
+        <div class="rep-card-icon">
+          <i class="fas fa-scale-balanced"></i>
+        </div>
+        <div class="rep-card-info">
+          <span class="rep-card-label">Balance</span>
+          <span class="rep-card-valor">${{ balance.balance | number:'1.0-0' }}</span>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (!balance) {
+    <div class="rep-no-balance">
+      <i class="fas fa-info-circle"></i>
+      No hay datos de balance para {{ MESES[mes - 1] }} {{ anio }}.
+    </div>
+  }
+
+  <!-- ── Gráfica comparativa ── -->
+  @if (comparativo && comparativo.categorias.length > 0) {
+    <section class="rep-grafica-section">
+      <div class="rep-grafica-header">
+        <h2>Planeado vs Ejecutado</h2>
+        <span class="rep-grafica-sub">{{ MESES[mes - 1] }} {{ anio }}</span>
+        <div class="rep-totales-row">
+          <span class="rep-total-chip chip-planeado">
+            Total planeado: ${{ comparativo.totalPlaneado | number:'1.0-0' }}
+          </span>
+          <span class="rep-total-chip chip-ejecutado">
+            Total ejecutado: ${{ comparativo.totalEjecutado | number:'1.0-0' }}
+          </span>
+        </div>
+      </div>
+      <div class="rep-canvas-wrap">
+        <canvas #graficaCanvas></canvas>
+      </div>
+    </section>
+
+    <!-- ── Tabla de categorías ── -->
+    <section class="rep-tabla-section">
+      <h2>Detalle por Categoría</h2>
+      <table class="rep-tabla">
+        <thead>
+          <tr>
+            <th>CATEGORÍA</th>
+            <th>TIPO</th>
+            <th>PLANEADO</th>
+            <th>EJECUTADO</th>
+            <th>DIFERENCIA</th>
+            <th>ESTADO</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (cat of comparativo.categorias; track cat.categoriaId) {
+            <tr>
+              <td class="td-nombre">{{ cat.nombre }}</td>
+              <td>
+                <span class="chip-tipo" [class.chip-ingreso]="cat.tipo === 'INGRESO'"
+                                        [class.chip-gasto]="cat.tipo === 'GASTO'">
+                  {{ cat.tipo }}
+                </span>
+              </td>
+              <td>${{ cat.planeado | number:'1.0-0' }}</td>
+              <td>${{ cat.ejecutado | number:'1.0-0' }}</td>
+              <td [class.dif-pos]="cat.diferencia >= 0" [class.dif-neg]="cat.diferencia < 0">
+                {{ cat.diferencia >= 0 ? '+' : '' }}${{ cat.diferencia | number:'1.0-0' }}
+              </td>
+              <td>
+                @if (cat.excedido) {
+                  <span class="chip-estado chip-excedido">
+                    <i class="fas fa-triangle-exclamation"></i> Excedido
+                  </span>
+                } @else {
+                  <span class="chip-estado chip-ok">
+                    <i class="fas fa-check"></i> OK
+                  </span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </section>
+  }
+
+  @if (!comparativo || comparativo.categorias.length === 0) {
+    <div class="rep-state">
+      <i class="fas fa-chart-bar"></i>
+      <p>No hay datos comparativos para {{ MESES[mes - 1] }} {{ anio }}.</p>
+    </div>
+  }
+}

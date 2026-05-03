@@ -12,10 +12,23 @@
   <div class="top-bar-right">
     <div class="search-box">
       <i class="fas fa-search"></i>
-      <input type="text" placeholder="Buscar transacción...">
+      <input
+        type="text"
+        placeholder="Buscar transacción..."
+        [(ngModel)]="searchText"
+      >
     </div>
     <button class="btn-icon"><i class="fas fa-bell"></i></button>
-    <button class="btn-add">
+    <button
+      class="btn-export"
+      type="button"
+      (click)="exportarExcel()"
+      [disabled]="descargando"
+    >
+      <i class="fas" [class.fa-file-excel]="!descargando" [class.fa-spinner]="descargando" [class.fa-spin]="descargando"></i>
+      {{ descargando ? 'Exportando...' : 'Exportar Excel' }}
+    </button>
+    <button class="btn-add" type="button" routerLink="/dashboard/transacciones/nueva">
       <i class="fas fa-plus"></i> Añadir Transacción
     </button>
   </div>
@@ -42,10 +55,12 @@
 @if (!loading && !error) {
 
   @if (sinPresupuesto) {
-    <div class="warning-state">
+    <div class="presupuesto-banner">
       <i class="fas fa-wallet"></i>
-      <p>No hay presupuesto para este año.</p>
-      <a class="btn-retry" routerLink="/dashboard/presupuesto">Ir a Presupuesto</a>
+      <span>No hay presupuesto configurado para este año.</span>
+      <button routerLink="/dashboard/presupuesto" class="btn-banner">
+        Ir a Presupuesto
+      </button>
     </div>
   }
 
@@ -54,20 +69,20 @@
 
     <div class="metric-card">
       <div class="metric-header">
-        <div class="metric-icon ingresos"><i class="fas fa-trending-up"></i></div>
+        <div class="metric-icon ingresos"><i class="fas fa-arrow-trend-up"></i></div>
         <span class="metric-badge positive">Mensual</span>
       </div>
       <p class="metric-label">Ingresos Mensuales</p>
-      <p class="metric-value">${{ ingresosMensuales | number:'1.0-0' }}</p>
+      <p class="metric-value">{{ ingresosMensuales | currency:'COP':'symbol':'1.0-0' }}</p>
     </div>
 
     <div class="metric-card">
       <div class="metric-header">
-        <div class="metric-icon gastos"><i class="fas fa-trending-down"></i></div>
+        <div class="metric-icon gastos"><i class="fas fa-arrow-trend-down"></i></div>
         <span class="metric-badge negative">Mensual</span>
       </div>
       <p class="metric-label">Gastos Mensuales</p>
-      <p class="metric-value">${{ gastosMensuales | number:'1.0-0' }}</p>
+      <p class="metric-value">{{ gastosMensuales | currency:'COP':'symbol':'1.0-0' }}</p>
     </div>
 
     <div class="metric-card">
@@ -78,7 +93,7 @@
         </span>
       </div>
       <p class="metric-label">Balance</p>
-      <p class="metric-value">${{ balance | number:'1.0-0' }}</p>
+      <p class="metric-value">{{ balance | currency:'COP':'symbol':'1.0-0' }}</p>
     </div>
 
     <div class="metric-card">
@@ -89,7 +104,7 @@
         </span>
       </div>
       <p class="metric-label">Progreso del Presupuesto</p>
-      <p class="metric-sub">${{ presupuestoRestante() | number:'1.0-0' }} restantes</p>
+      <p class="metric-sub">{{ presupuestoRestante() | currency:'COP':'symbol':'1.0-0' }} restantes</p>
       <div class="progress-bar">
         <div class="progress-fill" [ngStyle]="{'width': (progresoPresupuesto > 100 ? 100 : progresoPresupuesto) + '%'}"></div>
       </div>

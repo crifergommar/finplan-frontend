@@ -1,1 +1,89 @@
-<p>pago-form works!</p>
+<!-- Backdrop -->
+<div class="pf-backdrop" (click)="cancelar()"></div>
+
+<!-- Modal -->
+<div class="pf-modal" role="dialog" aria-modal="true">
+
+  <div class="pf-modal-header">
+    <div>
+      <h2>Registrar Pago</h2>
+      <p>{{ deuda.nombre }}</p>
+    </div>
+    <button class="pf-close" (click)="cancelar()" aria-label="Cerrar">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- Error -->
+  @if (error) {
+    <div class="pf-error">
+      <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+
+    <!-- Cuota -->
+    <div class="pf-field">
+      <label for="cuotaId">Cuota</label>
+      @if (cargandoCuotas) {
+        <p class="pf-loading-cuotas">Cargando cuotas...</p>
+      } @else {
+        <select id="cuotaId" formControlName="cuotaId" (change)="onCuotaChange()"
+                [class.invalid]="esInvalido('cuotaId')">
+          <option [value]="null">Selecciona una cuota</option>
+          @for (c of cuotas; track c.id) {
+            <option [value]="c.id">
+              Cuota #{{ c.numero }} — ${{ c.monto | number:'1.0-0' }} (vence {{ c.fechaVcto }})
+            </option>
+          }
+        </select>
+        @if (cuotas.length === 0) {
+          <span class="pf-hint">No hay cuotas pendientes para esta deuda.</span>
+        }
+      }
+    </div>
+
+    <!-- Monto -->
+    <div class="pf-field">
+      <label for="monto">Monto</label>
+      <div class="pf-input-prefix">
+        <span>$</span>
+        <input
+          id="monto"
+          type="number"
+          min="1"
+          formControlName="monto"
+          placeholder="0"
+          [class.invalid]="esInvalido('monto')"
+        >
+      </div>
+      @if (esInvalido('monto')) {
+        <span class="pf-error-msg">Ingresa un monto mayor a 0.</span>
+      }
+    </div>
+
+    <!-- Fecha -->
+    <div class="pf-field">
+      <label for="fechaPago">Fecha de Pago</label>
+      <input
+        id="fechaPago"
+        type="date"
+        formControlName="fechaPago"
+        [class.invalid]="esInvalido('fechaPago')"
+      >
+    </div>
+
+    <div class="pf-actions">
+      <button type="button" class="pf-btn-cancel" (click)="cancelar()" [disabled]="guardando">
+        Cancelar
+      </button>
+      <button type="submit" class="pf-btn-save"
+              [disabled]="form.invalid || guardando || cuotas.length === 0">
+        @if (guardando) { <i class="fas fa-spinner fa-spin"></i> Guardando... }
+        @else { <i class="fas fa-check"></i> Guardar Pago }
+      </button>
+    </div>
+
+  </form>
+</div>
