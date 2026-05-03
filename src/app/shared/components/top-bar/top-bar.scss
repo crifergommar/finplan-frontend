@@ -1,0 +1,45 @@
+/* CONTENEDOR GENERAL (sin fondo blanco) */
+.top-bar-wrapper {
+    position: absolute;
+    top: 0;
+    right: 0cqi;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    background: #fff;
+}
+
+/* BARRA VERDE */
+.top-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 2rem;
+    margin-bottom: 1rem;
+
+    background: #22c55e;
+    color: #fff;
+
+    padding: 8px 16px;
+
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+
+    font-size: 12px;
+    font-weight: 500;
+
+    box-shadow: 0 6px 15px rgba(34, 197, 94, 0.25);
+}
+
+/* divisor */
+.divider {
+    width: 1px;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.4);
+    margin: 0 6px;
+}
+
+/* iconos */
+.top-bar i {
+    font-size: 12px;
+}

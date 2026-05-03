@@ -6,13 +6,15 @@ import { DashboardLayout } from './shared/components/dashboard-layout/dashboard-
 import { DashboardHome } from './features/dashboard/components/dashboard-home/dashboard-home';
 import { PresupuestoTabla } from './features/presupuesto/components/presupuesto-tabla/presupuesto-tabla';
 import { TransaccionLista } from './features/transaccion/components/transaccion-lista/transaccion-lista';
-import { PagosComponent } from './features/pagos/components/pagos.component';
 import { AuthGuard } from './core/guards/auth.guard';
+import { Contacto } from './features/contacto/contacto';
+import { RegistrarPago } from './features/pagos/registrar-pago';
 
 export const routes: Routes = [
   { path: '', component: Landing },
   { path: 'register', component: Registro },
   { path: 'login', component: Login },
+  { path: 'contacto', component: Contacto },
   {
     path: 'dashboard',
     component: DashboardLayout,
@@ -21,7 +23,8 @@ export const routes: Routes = [
       { path: '', component: DashboardHome },
       { path: 'presupuesto', component: PresupuestoTabla },
       { path: 'transacciones', component: TransaccionLista },
-      { path: 'pagos', component: PagosComponent, canActivate: [AuthGuard] },
+      { path: 'pagos', component: RegistrarPago },
     ],
   },
+  
 ];

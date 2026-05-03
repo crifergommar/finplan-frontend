@@ -3,42 +3,17 @@
         <img src="images/logo.png" alt="logo">
     </div>
 
-    <!-- Botón hamburguesa (solo móvil) -->
-    <button class="btn-hamburguesa" (click)="toggleMenu()" aria-label="Menú">
-        <i [class]="menuAbierto ? 'fas fa-times' : 'fas fa-bars'"></i>
-    </button>
-
-    <div class="nav-center nav-center-desktop">
-        <a routerLink="/"   routerLinkActive = "active-link" [routerLinkActiveOptions] = "{ exact: true }">Inicio</a>
-        <a routerLink="/servicios"  routerLinkActive="active-link">Servicios</a>
-        <a routerLink="/nosotros"  routerLinkActive="active-link">nosotros</a>
-        <a routerLink="/blog"  routerLinkActive="active-link">Blog</a>
-        <a routerLink="/contacto"  routerLinkActive="active-link">Contacto</a>
+    <div class="nav-center">
+        <a href="#hero" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+        <a href="#funcionalidades">Funcionalidades</a>
+        <a href="#seguridad">Seguridad</a>
+        <a routerLink="/contacto" routerLinkActive="active-link">Contacto</a>
     </div>
 
     <div class="nav-right">
         <a routerLink="/login" class="login">iniciar sesión</a>
         <a routerLink="/register">
-        <button class="register">Registrarse</button>
-        </a>
-    </div>
-</nav>
-
-<!-- Overlay móvil (fuera del nav para evitar stacking context) -->
-<div class="nav-overlay" [class.visible]="menuAbierto" (click)="cerrarMenu()"></div>
-
-<!-- Drawer móvil (fuera del nav) -->
-<div class="nav-drawer" [class.abierto]="menuAbierto">
-    <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" (click)="cerrarMenu()">Inicio</a>
-    <a routerLink="/servicios" routerLinkActive="active-link" (click)="cerrarMenu()">Servicios</a>
-    <a routerLink="/nosotros" routerLinkActive="active-link" (click)="cerrarMenu()">nosotros</a>
-    <a routerLink="/blog" routerLinkActive="active-link" (click)="cerrarMenu()">Blog</a>
-    <a routerLink="/contacto" routerLinkActive="active-link" (click)="cerrarMenu()">Contacto</a>
-
-    <div class="nav-right-mobile">
-        <a routerLink="/login" class="login" (click)="cerrarMenu()">iniciar sesión</a>
-        <a routerLink="/register" (click)="cerrarMenu()">
             <button class="register">Registrarse</button>
         </a>
     </div>
-</div>
+</nav>
